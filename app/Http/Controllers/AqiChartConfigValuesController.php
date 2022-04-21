@@ -35,7 +35,7 @@ class AqiChartConfigValuesController extends Controller
      */
     public function store(Request $request)
     {
-        return "hi";
+        return "hi changes made in develop branch";
         //
     }
 
