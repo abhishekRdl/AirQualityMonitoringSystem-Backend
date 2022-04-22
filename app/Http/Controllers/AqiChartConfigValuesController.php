@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\AqiChartConfigValues;
 use Illuminate\Http\Request;
 
@@ -35,7 +35,27 @@ class AqiChartConfigValuesController extends Controller
      */
     public function store(Request $request)
     {
-        return "hello";
+        $aqiTemplate = AqiChartConfigValues::where('aqiTemplateName', $request->aqiTemplateName)->first();     
+        
+        if($aqiTemplate){ 
+            $response = [
+                "message" => "AQI Template name already exist"
+            ];
+            $status = 409;                
+           
+        }        
+        else{
+            $aqiTemplate = new AqiChartConfigValues;
+            $role->customerId = $request->customerId;
+            $role->rolename = $request->rolename;
+            $role->rolecode = $request->rolecode;            
+            $role->save();
+            $response = [
+                "message" => "Role added successfully"
+            ];
+            $status = 201;           
+       }
+       return response($response,$status);    
     }
 
     /**

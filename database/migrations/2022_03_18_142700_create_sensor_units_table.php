@@ -53,21 +53,17 @@ class CreateSensorUnitsTable extends Migration
             $table->string('unLatchDuration')->nullable();
                         
             $table->text('isAQI')->nullable(); 
+
             $table->text('parmGoodMinScale')->nullable(); 
-            $table->text('parmGoodMaxScale')->nullable();
-            
+            $table->text('parmGoodMaxScale')->nullable();            
             $table->text('parmSatisfactoryMinScale')->nullable();
             $table->text('parmSatisfactoryMaxScale')->nullable();
-
             $table->text('parmModerateMinScale')->nullable();
             $table->text('parmModerateMaxScale')->nullable();
-
             $table->text('parmPoorMinScale')->nullable();
             $table->text('parmPoorMaxScale')->nullable();
-
             $table->text('parmVeryPoorMinScale')->nullable();
             $table->text('parmVeryPoorMaxScale')->nullable();
-
             $table->text('parmSevereMinScale')->nullable();
             $table->text('parmSevereMaxScale')->nullable();       
             

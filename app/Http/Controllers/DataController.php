@@ -107,6 +107,9 @@ class DataController extends Controller{
                             'digitalAlertType',
                             'digitalLowAlert',
                             'digitalHighAlert',
+
+
+                            
                             
                         
                         );

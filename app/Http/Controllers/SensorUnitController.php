@@ -144,8 +144,7 @@ class SensorUnitController extends Controller
                 $sensorUnit->alarm = $request->alarm;
                 $sensorUnit->unLatchDuration = $request->unLatchDuration;  
                 
-                $sensorUnit->isAQI = $request->isAQI; 
-                    
+                $sensorUnit->isAQI = $request->isAQI;                    
                 
                 $sensorUnit->parmGoodMinScale = $request->parmGoodMinScale;
                 $sensorUnit->parmGoodMaxScale = $request->parmGoodMaxScale;
