@@ -447,10 +447,7 @@ class SensorController extends Controller
             $sensor->maxRatedReadingScale   = $request->maxRatedReadingScale;
             $sensor->minRatedReading        = $request->minRatedReading;
             $sensor->minRatedReadingChecked = $request->minRatedReadingChecked;
-            $sensor->minRatedReadingScale   = $request->minRatedReadingScale;
-            
-            
-           
+            $sensor->minRatedReadingScale   = $request->minRatedReadingScale;    
             
             
             $sensor->pollingIntervalType = $request->pollingIntervalType;
@@ -476,6 +473,20 @@ class SensorController extends Controller
             $sensor->digitalAlertType = $request->digitalAlertType;
             $sensor->digitalLowAlert = $request->digitalLowAlert;
             $sensor->digitalHighAlert = $request->digitalHighAlert;
+
+            $sensorUnit->isAQI = $request->isAQI;         
+            $sensorUnit->parmGoodMinScale = $request->parmGoodMinScale;
+            $sensorUnit->parmGoodMaxScale = $request->parmGoodMaxScale;
+            $sensorUnit->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
+            $sensorUnit->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
+            $sensorUnit->parmModerateMinScale = $request->parmModerateMinScale;
+            $sensorUnit->parmModerateMaxScale = $request->parmModerateMaxScale;
+            $sensorUnit->parmPoorMinScale = $request->parmPoorMinScale;
+            $sensorUnit->parmPoorMaxScale = $request->parmPoorMaxScale;
+            $sensorUnit->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
+            $sensorUnit->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
+            $sensorUnit->parmSevereMinScale = $request->parmSevereMinScale;
+            $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
             
                 
 

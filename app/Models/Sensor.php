@@ -18,8 +18,7 @@ class Sensor extends Model
         'facility_id', 
         'building_id',
         'floor_id',
-        'lab_id',
-                            
+        'lab_id',                           
       
         
         'categoryId',//1
@@ -79,7 +78,25 @@ class Sensor extends Model
         'digitalAlertType',
         'digitalLowAlert',
         'digitalHighAlert',
+
+        'isAQI',
+        'parmGoodMinScale',
+        'parmGoodMaxScale',
         
+        'parmSatisfactoryMinScale',
+        'parmSatisfactoryMaxScale',
+
+        'parmModerateMinScale',
+        'parmModerateMaxScale',
+
+        'parmPoorMinScale',
+        'parmPoorMaxScale',
+
+        'parmVeryPoorMinScale',
+        'parmVeryPoorMaxScale',
+
+        'parmSevereMinScale',
+        'parmSevereMaxScale',  
         
 
         

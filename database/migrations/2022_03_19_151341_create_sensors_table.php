@@ -80,9 +80,26 @@ class CreateSensorsTable extends Migration
             $table->text('outofrangeLowAlert')->nullable();
             $table->text('outofrangeHighAlert')->nullable();
 
+            $table->text('digitalAlertType')->nullable();
+            $table->text('digitalLowAlert')->nullable();
+            $table->text('digitalHighAlert')->nullable();
             
             $table->text('alert')->nullable();
-            $table->text('alertTag')->nullable();            
+            $table->text('alertTag')->nullable();     
+            
+            $table->text('isAQI')->nullable(); 
+            $table->text('parmGoodMinScale')->nullable(); 
+            $table->text('parmGoodMaxScale')->nullable();            
+            $table->text('parmSatisfactoryMinScale')->nullable();
+            $table->text('parmSatisfactoryMaxScale')->nullable();
+            $table->text('parmModerateMinScale')->nullable();
+            $table->text('parmModerateMaxScale')->nullable();
+            $table->text('parmPoorMinScale')->nullable();
+            $table->text('parmPoorMaxScale')->nullable();
+            $table->text('parmVeryPoorMinScale')->nullable();
+            $table->text('parmVeryPoorMaxScale')->nullable();
+            $table->text('parmSevereMinScale')->nullable();
+            $table->text('parmSevereMaxScale')->nullable();   
             
             $table->timestamps();
         });
@@ -98,3 +115,6 @@ class CreateSensorsTable extends Migration
         Schema::dropIfExists('sensors');
     }
 }
+
+
+           
