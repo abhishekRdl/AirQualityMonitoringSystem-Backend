@@ -80,6 +80,9 @@ class CreateSensorsTable extends Migration
             $table->text('outofrangeLowAlert')->nullable();
             $table->text('outofrangeHighAlert')->nullable();
 
+            $table->text('digitalAlertType')->nullable();
+            $table->text('digitalLowAlert')->nullable();
+            $table->text('digitalHighAlert')->nullable();
             
             $table->text('alert')->nullable();
             $table->text('alertTag')->nullable();     
