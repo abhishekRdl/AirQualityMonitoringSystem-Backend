@@ -184,7 +184,7 @@ Route::get('aqmi', [AqmiJsonDataController::class, 'index']);
 
 
 
-Route::get('AqiChart/update', [AqiChartConfigValuesController::class, 'update']);
+Route::get('AqiChart/update', [AqiChartConfigValuesController::class, 'update']); //added by prjwal
 
 
 
