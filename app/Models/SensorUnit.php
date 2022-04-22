@@ -33,7 +33,6 @@ class SensorUnit extends Model
         'ipAddress',
         'subnetMask',  
 
-
         'isStel',
         'stelDuration',
         'stelType',
@@ -46,9 +45,26 @@ class SensorUnit extends Model
         'twaAlert',
 
         'alarm',
-        'unLatchDuration'
+        'unLatchDuration',
+
+        'isAQI',
+        'parmGoodMinScale',
+        'parmGoodMaxScale',
         
-        
+        'parmSatisfactoryMinScale',
+        'parmSatisfactoryMaxScale',
+
+        'parmModerateMinScale',
+        'parmModerateMaxScale',
+
+        'parmPoorMinScale',
+        'parmPoorMaxScale',
+
+        'parmVeryPoorMinScale',
+        'parmVeryPoorMaxScale',
+
+        'parmSevereMinScale',
+        'parmSevereMaxScale',                
         
         
         

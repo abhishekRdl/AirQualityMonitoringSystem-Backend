@@ -15,7 +15,7 @@ class CreateAqiChartConfigValuesTable extends Migration
     {
         Schema::create('aqi_chart_config_values', function (Blueprint $table) {
             $table->id();
-            $table->text('isAQI')->nullable();             
+            $table->text('aqiTemplateName')->nullable();             
             $table->text('aqiGoodMinScale')->nullable();
             $table->text('aqiGoodMaxScale')->nullable();
             $table->text('aqiSatisfactoryMinScale')->nullable();

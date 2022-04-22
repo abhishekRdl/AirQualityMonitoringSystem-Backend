@@ -23,6 +23,8 @@ use App\Http\Controllers\SensorUnitController;
 use App\Http\Controllers\ConfigSetupController;
 use App\Http\Controllers\DeviceConfigSetupController;
 use App\Http\Controllers\AqmiJsonDataController;
+use App\Http\Controllers\AqiChartConfigValuesController;
+
 
 
 /*
@@ -67,7 +69,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('empuser', [EmpUserController::class, 'index']);
     Route::get('empuser/{id}/show', [EmpUserController::class, 'show']);//work in progress
     Route::post('empuser/{id}/update', [EmpUserController::class, 'update']);
-    Route::post('empuser/{id}/delete', [EmpUserController::class, 'destroy']);   
+    Route::post('empuser/{id}/delete', [EmpUserController::class, 'destroy']);  
 
     //Roles
     Route::post('role/add', [RoleController::class, 'store']);
@@ -171,6 +173,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
+
+Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
+Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
+
 
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
 
