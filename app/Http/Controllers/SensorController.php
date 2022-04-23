@@ -474,6 +474,22 @@ class SensorController extends Controller
             $sensor->digitalLowAlert = $request->digitalLowAlert;
             $sensor->digitalHighAlert = $request->digitalHighAlert;
 
+
+
+            $sensor->isStel = $request->isStel;                
+            $sensor->stelDuration = $request->stelDuration;
+            $sensor->stelType = $request->stelType;
+            $sensor->stelLimit = $request->stelLimit;
+            $sensor->stelAlert = $request->stelAlert;
+            
+            $sensor->twaDuration = $request->twaDuration;
+            $sensor->twaType = $request->twaType;
+            $sensor->twaLimit = $request->twaLimit;
+            $sensor->twaAlert = $request->twaAlert;
+
+            $sensor->alarm = $request->alarm;
+            $sensor->unLatchDuration = $request->unLatchDuration;  
+
             $sensorUnit->isAQI = $request->isAQI;         
             $sensorUnit->parmGoodMinScale = $request->parmGoodMinScale;
             $sensorUnit->parmGoodMaxScale = $request->parmGoodMaxScale;
@@ -635,7 +651,21 @@ class SensorController extends Controller
                 $sensor->digitalAlertType = $request->digitalAlertType;
                 $sensor->digitalLowAlert = $request->digitalLowAlert;
                 $sensor->digitalHighAlert = $request->digitalHighAlert;
-    
+
+                $sensor->isStel = $request->isStel;                
+                $sensor->stelDuration = $request->stelDuration;
+                $sensor->stelType = $request->stelType;
+                $sensor->stelLimit = $request->stelLimit;
+                $sensor->stelAlert = $request->stelAlert;
+                
+                $sensor->twaDuration = $request->twaDuration;
+                $sensor->twaType = $request->twaType;
+                $sensor->twaLimit = $request->twaLimit;
+                $sensor->twaAlert = $request->twaAlert;
+
+                $sensor->alarm = $request->alarm;
+                $sensor->unLatchDuration = $request->unLatchDuration;  
+                    
                 $sensor->save();
                 $response = [
                     "message" => "Sensor updated successfully"

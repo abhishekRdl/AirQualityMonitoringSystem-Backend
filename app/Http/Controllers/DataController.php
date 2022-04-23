@@ -43,73 +43,74 @@ class DataController extends Controller{
             
             
             $query = Sensor::select(
-                            'id',
-                            'companyCode',
-                            'location_id',
-                            'branch_id',   
-                            'facility_id', 
-                            'building_id',
-                            'floor_id',
-                            'lab_id',
+                            // 'id',
+                            // 'companyCode',
+                            // 'location_id',
+                            // 'branch_id',   
+                            // 'facility_id', 
+                            // 'building_id',
+                            // 'floor_id',
+                            // 'lab_id',
                             
-                            'categoryId',//1
-                            'deviceCategory',//AQMI
+                            // 'categoryId',//1
+                            // 'deviceCategory',//AQMI
                             
-                            'sensorCategoryId',//1
-                            'sensorCategoryName',//Temperature
+                            // 'sensorCategoryId',//1
+                            // 'sensorCategoryName',//Temperature
                             
-                            'deviceId',//34
-                            'deviceName',//AQMI-007
+                            // 'deviceId',//34
+                            // 'deviceName',//AQMI-007
                     
-                            'sensorName',//2
-                            'sensorNameUnit',//h20
-                            'conversionType',
-                            'sensorOutput',
-                            'sensorType',
-                            'sensorTag',
+                            // 'sensorName',//2
+                            // 'sensorNameUnit',//h20
                             
-                            'registerId',
-                            'registerType',
-                            'slaveId',
+                            // 'conversionType',
                             
-                            'subnetMask',
-                            'units',
-                            'ipAddress',
-                            'length',
+                            // 'sensorOutput',
+                            // 'sensorType',
+                            // 'sensorTag',
+                            
+                            // 'registerId',
+                            // 'registerType',
+                            // 'slaveId',
+                            
+                            // 'subnetMask',
+                            // 'units',
+                            // 'ipAddress',
+                            // 'length',
                     
-                            'maxRatedReading',
-                            'maxRatedReadingChecked',
-                            'maxRatedReadingScale',
-                            'minRatedReading',
-                            'minRatedReadingChecked',
-                            'minRatedReadingScale',
+                            // 'maxRatedReading',
+                            // 'maxRatedReadingChecked',
+                            // 'maxRatedReadingScale',
+                            // 'minRatedReading',
+                            // 'minRatedReadingChecked',
+                            // 'minRatedReadingScale',
                             
-                            'pollingIntervalType',
+                            // 'pollingIntervalType',
                             
-                            'criticalMinValue',
-                            'criticalMaxValue',
-                            'criticalAlertType',
-                            'criticalLowAlert',
-                            'criticalHighAlert',
+                            // 'criticalMinValue',
+                            // 'criticalMaxValue',
+                            // 'criticalAlertType',
+                            // 'criticalLowAlert',
+                            // 'criticalHighAlert',
                             
-                            'warningMinValue',
-                            'warningMaxValue',
-                            'warningAlertType',
-                            'warningLowAlert',
-                            'warningHighAlert',
+                            // 'warningMinValue',
+                            // 'warningMaxValue',
+                            // 'warningAlertType',
+                            // 'warningLowAlert',
+                            // 'warningHighAlert',
                             
-                            'outofrangeMinValue',
-                            'outofrangeMaxValue',
-                            'outofrangeAlertType',
-                            'outofrangeLowAlert',
-                            'outofrangeHighAlert',
-
-                            'digitalAlertType',
-                            'digitalLowAlert',
-                            'digitalHighAlert',
-
-
+                            // 'outofrangeMinValue',
+                            // 'outofrangeMaxValue',
+                            // 'outofrangeAlertType',
+                            // 'outofrangeLowAlert',
+                            // 'outofrangeHighAlert',
                             
+                            // 'digitalAlertType',
+                            // 'digitalLowAlert',
+                            // 'digitalHighAlert',
+                            
+                            '*'
                             
                         
                         );
@@ -129,70 +130,74 @@ class DataController extends Controller{
                     $result = $query->offset(value:($page - 1) * $perPage)->limit($perPage)->get();
                                       
                     $query1 = Sensor::select(
-                            'id',
-                            'companyCode',
-                            'location_id',
-                            'branch_id',   
-                            'facility_id', 
-                            'building_id',
-                            'floor_id',
-                            'lab_id',
-                                
-                            'categoryId',//1
-                            'deviceCategory',//AQMI
+                            // 'id',
+                            // 'companyCode',
+                            // 'location_id',
+                            // 'branch_id',   
+                            // 'facility_id', 
+                            // 'building_id',
+                            // 'floor_id',
+                            // 'lab_id',
                             
-                            'sensorCategoryId',//1
-                            'sensorCategoryName',//Temperature
+                            // 'categoryId',//1
+                            // 'deviceCategory',//AQMI
                             
-                            'deviceId',//34
-                            'deviceName',//AQMI-007
+                            // 'sensorCategoryId',//1
+                            // 'sensorCategoryName',//Temperature
+                            
+                            // 'deviceId',//34
+                            // 'deviceName',//AQMI-007
                     
-                            'sensorName',//2
-                            'sensorNameUnit',//h20
-                            'conversionType',
-                            'sensorOutput',
-                            'sensorType',
-                            'sensorTag',
+                            // 'sensorName',//2
+                            // 'sensorNameUnit',//h20
                             
-                            'registerId',
-                            'registerType',
-                            'slaveId',
+                            // 'conversionType',
                             
-                            'subnetMask',
-                            'units',
-                            'ipAddress',
-                            'length',
+                            // 'sensorOutput',
+                            // 'sensorType',
+                            // 'sensorTag',
+                            
+                            // 'registerId',
+                            // 'registerType',
+                            // 'slaveId',
+                            
+                            // 'subnetMask',
+                            // 'units',
+                            // 'ipAddress',
+                            // 'length',
                     
-                            'maxRatedReading',
-                            'maxRatedReadingChecked',
-                            'maxRatedReadingScale',
-                            'minRatedReading',
-                            'minRatedReadingChecked',
-                            'minRatedReadingScale',
+                            // 'maxRatedReading',
+                            // 'maxRatedReadingChecked',
+                            // 'maxRatedReadingScale',
+                            // 'minRatedReading',
+                            // 'minRatedReadingChecked',
+                            // 'minRatedReadingScale',
                             
-                            'pollingIntervalType',
+                            // 'pollingIntervalType',
                             
-                            'criticalMinValue',
-                            'criticalMaxValue',
-                            'criticalAlertType',
-                            'criticalLowAlert',
-                            'criticalHighAlert',
+                            // 'criticalMinValue',
+                            // 'criticalMaxValue',
+                            // 'criticalAlertType',
+                            // 'criticalLowAlert',
+                            // 'criticalHighAlert',
                             
-                            'warningMinValue',
-                            'warningMaxValue',
-                            'warningAlertType',
-                            'warningLowAlert',
-                            'warningHighAlert',
+                            // 'warningMinValue',
+                            // 'warningMaxValue',
+                            // 'warningAlertType',
+                            // 'warningLowAlert',
+                            // 'warningHighAlert',
                             
-                            'outofrangeMinValue',
-                            'outofrangeMaxValue',
-                            'outofrangeAlertType',
-                            'outofrangeLowAlert',
-                            'outofrangeHighAlert',
-
-                            'digitalAlertType',
-                            'digitalLowAlert',
-                            'digitalHighAlert',
+                            // 'outofrangeMinValue',
+                            // 'outofrangeMaxValue',
+                            // 'outofrangeAlertType',
+                            // 'outofrangeLowAlert',
+                            // 'outofrangeHighAlert',
+                            
+                            // 'digitalAlertType',
+                            // 'digitalLowAlert',
+                            // 'digitalHighAlert',
+                            
+                            '*'
                             
                         
                         );
@@ -212,73 +217,74 @@ class DataController extends Controller{
                     $result1 = $query1->offset(value:($page - 1) * $perPage)->limit($perPage)->get();
                     
                     $query2 = Sensor::select(
-                            'id',
-                            'companyCode',
-                            'location_id',
-                            'branch_id',   
-                            'facility_id', 
-                            'building_id',
-                            'floor_id',
-                            'lab_id',
+                            // 'id',
+                            // 'companyCode',
+                            // 'location_id',
+                            // 'branch_id',   
+                            // 'facility_id', 
+                            // 'building_id',
+                            // 'floor_id',
+                            // 'lab_id',
                             
-                            'categoryId',//1
-                            'deviceCategory',//AQMI
+                            // 'categoryId',//1
+                            // 'deviceCategory',//AQMI
                             
-                            'sensorCategoryId',//1
-                            'sensorCategoryName',//Temperature
+                            // 'sensorCategoryId',//1
+                            // 'sensorCategoryName',//Temperature
                             
-                            'deviceId',//34
-                            'deviceName',//AQMI-007
+                            // 'deviceId',//34
+                            // 'deviceName',//AQMI-007
                     
-                            'sensorName',//2
-                            'sensorNameUnit',//h20
+                            // 'sensorName',//2
+                            // 'sensorNameUnit',//h20
                             
-                            'conversionType',
-                            'sensorOutput',
-                            'sensorType',
-                            'sensorTag',
+                            // 'conversionType',
                             
-                            'registerId',
-                            'registerType',
-                            'slaveId',
+                            // 'sensorOutput',
+                            // 'sensorType',
+                            // 'sensorTag',
                             
-                            'subnetMask',
-                            'units',
-                            'ipAddress',
-                            'length',
+                            // 'registerId',
+                            // 'registerType',
+                            // 'slaveId',
+                            
+                            // 'subnetMask',
+                            // 'units',
+                            // 'ipAddress',
+                            // 'length',
                     
-                            'maxRatedReading',
-                            'maxRatedReadingChecked',
-                            'maxRatedReadingScale',
-                            'minRatedReading',
-                            'minRatedReadingChecked',
-                            'minRatedReadingScale',
+                            // 'maxRatedReading',
+                            // 'maxRatedReadingChecked',
+                            // 'maxRatedReadingScale',
+                            // 'minRatedReading',
+                            // 'minRatedReadingChecked',
+                            // 'minRatedReadingScale',
                             
-                            'pollingIntervalType',
+                            // 'pollingIntervalType',
                             
-                            'criticalMinValue',
-                            'criticalMaxValue',
-                            'criticalAlertType',
-                            'criticalLowAlert',
-                            'criticalHighAlert',
+                            // 'criticalMinValue',
+                            // 'criticalMaxValue',
+                            // 'criticalAlertType',
+                            // 'criticalLowAlert',
+                            // 'criticalHighAlert',
                             
-                            'warningMinValue',
-                            'warningMaxValue',
-                            'warningAlertType',
-                            'warningLowAlert',
-                            'warningHighAlert',
+                            // 'warningMinValue',
+                            // 'warningMaxValue',
+                            // 'warningAlertType',
+                            // 'warningLowAlert',
+                            // 'warningHighAlert',
                             
                             
-                            'outofrangeMinValue',
-                            'outofrangeMaxValue',
-                            'outofrangeAlertType',
-                            'outofrangeLowAlert',
-                            'outofrangeHighAlert',
-
-                            'digitalAlertType',
-                            'digitalLowAlert',
-                            'digitalHighAlert',
+                            // 'outofrangeMinValue',
+                            // 'outofrangeMaxValue',
+                            // 'outofrangeAlertType',
+                            // 'outofrangeLowAlert',
+                            // 'outofrangeHighAlert',
                             
+                            // 'digitalAlertType',
+                            // 'digitalLowAlert',
+                            // 'digitalHighAlert',
+                            '*'
                         );
                     $query2->where('companyCode','=',$this->companyCode);
                     $query2->where('location_id','=',$request->location_id);
@@ -397,6 +403,7 @@ class DataController extends Controller{
         
         
         
+         
         $getData = new DataUtilityController($request,$query);
         $response = $getData->getData();
         $status = 200;
