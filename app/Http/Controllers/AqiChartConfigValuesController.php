@@ -12,9 +12,16 @@ class AqiChartConfigValuesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = AqiChartConfigValues::query();            
+
+       
+        $getData = new DataUtilityController($request,$query);
+        $response = $getData->getData();
+        $status = 200;
+        
+        return response($response,$status);     
     }
 
     /**
@@ -46,12 +53,22 @@ class AqiChartConfigValuesController extends Controller
         }        
         else{
             $aqiTemplate = new AqiChartConfigValues;
-            $role->customerId = $request->customerId;
-            $role->rolename = $request->rolename;
-            $role->rolecode = $request->rolecode;            
-            $role->save();
+            $aqiTemplate->aqiTemplateName = $request->aqiTemplateName;
+            $aqiTemplate->aqiGoodMinScale = $request->aqiGoodMinScale;
+            $aqiTemplate->aqiGoodMaxScale = $request->aqiGoodMaxScale;
+            $aqiTemplate->aqiSatisfactoryMinScale = $request->aqiSatisfactoryMinScale;
+            $aqiTemplate->aqiSatisfactoryMaxScale = $request->aqiSatisfactoryMaxScale;
+            $aqiTemplate->aqiModerateMinScale = $request->aqiModerateMinScale;
+            $aqiTemplate->aqiModerateMaxScale = $request->aqiModerateMaxScale;
+            $aqiTemplate->aqiPoorMinScale = $request->aqiPoorMinScale;
+            $aqiTemplate->aqiPoorMaxScale = $request->aqiPoorMaxScale;
+            $aqiTemplate->aqiVeryPoorMinScale = $request->aqiVeryPoorMinScale;
+            $aqiTemplate->aqiVeryPoorMaxScale = $request->aqiVeryPoorMaxScale;
+            $aqiTemplate->aqiSevereMinScale = $request->aqiSevereMinScale;
+            $aqiTemplate->aqiSevereMaxScale = $request->aqiSevereMaxScale;               
+            $aqiTemplate->save();
             $response = [
-                "message" => "Role added successfully"
+                "message" => "AQI Template added successfully"
             ];
             $status = 201;           
        }
