@@ -14,9 +14,8 @@ class AqiChartConfigValuesController extends Controller
      */
     public function index(Request $request)
     {
-        $query = AqiChartConfigValues::query();            
-
-       
+        $query = AqiChartConfigValues::query();          
+      
         $getData = new DataUtilityController($request,$query);
         $response = $getData->getData();
         $status = 200;

@@ -84,8 +84,19 @@ class CreateSensorsTable extends Migration
             $table->text('digitalLowAlert')->nullable();
             $table->text('digitalHighAlert')->nullable();
             
-            $table->text('alert')->nullable();
-            $table->text('alertTag')->nullable();     
+            $table->string('isStel')->nullable(); 
+            $table->string('stelDuration')->nullable(); 
+            $table->string('stelType')->nullable(); 
+            $table->string('stelLimit')->nullable(); 
+            $table->string('stelAlert')->nullable(); 
+            
+            $table->string('twaDuration')->nullable(); 
+            $table->string('twaType')->nullable(); 
+            $table->string('twaLimit')->nullable(); 
+            $table->string('twaAlert')->nullable(); 
+
+            $table->string('alarm')->nullable(); 
+            $table->string('unLatchDuration')->nullable(); 
             
             $table->text('isAQI')->nullable(); 
             $table->text('parmGoodMinScale')->nullable(); 
