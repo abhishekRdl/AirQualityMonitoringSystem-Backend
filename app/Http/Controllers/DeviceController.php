@@ -114,7 +114,7 @@ class DeviceController extends Controller
                 $device->deviceImage = $imagePath;              
             }        
             
-            // $device->deviceIcon =  $request->deviceIcon;
+        
             $accessPath = "http://varmatrix.com/Aqms/blog/public/";
             
             //datapush file creation

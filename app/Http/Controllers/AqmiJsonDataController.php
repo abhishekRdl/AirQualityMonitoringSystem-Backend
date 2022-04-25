@@ -16,9 +16,12 @@ class AqmiJsonDataController extends Controller
     public function index(Request $request)
     {
         $query = AqmiJsonData::select('j_data');    
-        $this->searchedKey = $request->input(key:'searchKey') == "" ? "" : $request->input(key:'searchKey');            
-        if($this->searchedKey != ""){
-            $query->whereRaw(sql:"j_data LIKE '%". $this->searchedKey ."%'");
+        $this->searchedKey = $request->searchKey == "" ? "" : $request->searchKey;            
+  
+        
+        if($this->searchedKey != ""){            
+            $query->whereRaw(sql:"j_data LIKE '%". $this->searchedKey['BULDING'] ."%'");
+            $query->whereRaw(sql:"j_data LIKE '%". $this->searchedKey['FLOOR'] ."%'");
         }
         //$query->whereRaw(sql:"j_data LIKE '%\"FLOOR\":\"". $s ."\"%'");   
         
@@ -47,7 +50,7 @@ class AqmiJsonDataController extends Controller
 
         $status = 200;
         
-        return response($getData,$status);  
+        return response($response,$status);  
     }
 
     /**
