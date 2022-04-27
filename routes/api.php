@@ -139,6 +139,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('device/add',[DeviceController::class,'store']);
     Route::post('device/{id}/update',[DeviceController::class,'update']);
     Route::delete('device/{id}/delete',[DeviceController::class,'destroy']);
+    Route::post('deviceMode/{id}/update',[DeviceController::class,'updateDeviceMode']);
     Route::get('device', [DeviceController::class, 'index']);
     
     //sensorCategory
@@ -170,6 +171,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('DeviceConfigSetup/add',[DeviceConfigSetupController::class,'DeviceConfigAddOrUpdate']);
     Route::get('DeviceConfigSetup/{id}/getDeviceConfigData',[DeviceConfigSetupController::class,'getDeviceConfigData']);
     
+    Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
+
 });
 
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 

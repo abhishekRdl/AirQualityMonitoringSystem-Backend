@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use App\Exceptions\CustomException;
 use App\Http\Controllers\UTILITY\DataUtilityController;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
@@ -65,8 +67,15 @@ class BranchController extends Controller
     public function store(Request $request)
     {             
         
-        $branch = Branch::where('branchName', $request->branchName)->first();  
-        
+        $branchDataFound = DB::table('branches')
+                ->where('companyCode', '=', $this->companyCode)  
+                ->where('location_id', '=', $request->location_id)             
+                ->where('branchName', '=', $request->branchName)              
+                ->first(); 
+
+        if($branchDataFound){
+            throw new CustomException("Duplicate Entry found");
+        }        
         try{
             $branch = new Branch;
             $branch->companyCode = $this->companyCode;
@@ -84,7 +93,12 @@ class BranchController extends Controller
                 "error" => $e->errorInfo
             ];
             $status = 406; 
-        }
+        }catch(Exception $e){
+            $response = [
+                "error" =>  $e->getMessage()
+            ];    
+            $status = 404;           
+        } 
               
         return response($response,$status);
     }
@@ -125,6 +139,19 @@ class BranchController extends Controller
             if(!$branch){
                 throw new CustomException("Branch name not found");
             }  
+            
+            
+            $branchDataFound = DB::table('branches')
+                ->where('companyCode', '=', $this->companyCode)  
+                ->where('location_id', '=', $request->location_id)             
+                ->where('branchName', '=', $request->branchName)       
+                ->where('id','<>',$id)
+                ->first(); 
+            
+            if($branchDataFound){
+                throw new CustomException("Branch name already exist");
+            }
+            
             $branch->companyCode = $this->companyCode;
             $branch->location_id = $request->location_id;   
             $branch->branchName = $request->branchName;          
