@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Exception;
 
 
 class BuildingController extends Controller
@@ -66,11 +67,22 @@ class BuildingController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {  
+        
+        
+        $buildingDataFound = DB::table('buildings')
+                ->where('companyCode', '=', $this->companyCode)  
+                ->where('location_id', '=', $request->location_id)             
+                ->where('branch_id', '=', $request->branch_id)             
+                ->where('facility_id', '=', $request->facility_id)      
+                ->where('buildingName', '=', $request->buildingName)                  
+                ->first(); 
 
-         
-
-        $building = Building::where('buildingName', $request->buildingName)->first();  
+        
+        if($buildingDataFound){
+            throw new CustomException("Duplicate Entry found");
+        }
+        
 
         try{
             $building = new Building;
@@ -109,7 +121,12 @@ class BuildingController extends Controller
                 "message" => $e->getMessage()                
             ];
             $status = 406; 
-       }       
+       }catch(Exception $e){
+            $response = [
+                "error" =>  $e->getMessage()
+            ];    
+            $status = 404;           
+        }     
       
        return response($response,$status);
     }

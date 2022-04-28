@@ -7,6 +7,8 @@ use App\Models\Facilities;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use App\Exceptions\CustomException;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class FacilitiesController extends Controller
 {
@@ -64,10 +66,18 @@ class FacilitiesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-             
+    {       
         
-        $Facilities = Facilities::where('facilityName', $request->facilityName)->first();  
+        $facilityDataFound = DB::table('facilities')
+                ->where('companyCode', '=', $this->companyCode)  
+                ->where('location_id', '=', $request->location_id)             
+                ->where('branch_id', '=', $request->branch_id)             
+                ->where('facilityName', '=', $request->facilityName)         
+                ->first(); 
+
+        if($facilityDataFound){
+            throw new CustomException("Duplicate Entry found");
+        }
        
         try{
             $Facilities = new Facilities;
@@ -86,7 +96,13 @@ class FacilitiesController extends Controller
                 "error" => $e->errorInfo
             ];
             $status = 406; 
-        }
+        }catch(Exception $e){
+            $response = [
+                "error" =>  $e->getMessage()
+            ];    
+            $status = 404;           
+        }     
+      
          
         return response($response,$status);
     }
@@ -122,12 +138,28 @@ class FacilitiesController extends Controller
      */
     public function update(Request $request,$id)
     {       
-
+        
+       
         try{
             $Facilities = Facilities::find($id);
             if(!$Facilities){
                 throw new CustomException("facilityName not found");
             }  
+            
+            $facilityDataFound = DB::table('facilities')
+                ->where('companyCode', '=', $this->companyCode)  
+                ->where('location_id', '=', $request->location_id)             
+                ->where('branch_id', '=', $request->branch_id)             
+                ->where('facilityName', '=', $request->facilityName)
+                ->where('id','<>',$id)
+                ->first(); 
+
+            if($facilityDataFound){
+                throw new CustomException("Duplicate Entry found");
+            }
+        
+        
+        
             $Facilities->companyCode = $this->companyCode;
             $Facilities->location_id = $request->location_id;   
             $Facilities->branch_id = $request->branch_id;            

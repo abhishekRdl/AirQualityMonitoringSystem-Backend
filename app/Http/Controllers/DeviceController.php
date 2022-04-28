@@ -114,7 +114,7 @@ class DeviceController extends Controller
                 $device->deviceImage = $imagePath;              
             }        
             
-            // $device->deviceIcon =  $request->deviceIcon;
+        
             $accessPath = "http://varmatrix.com/Aqms/blog/public/";
             
             //datapush file creation
@@ -308,4 +308,33 @@ class DeviceController extends Controller
                     
         return response($response,$status); 
     }
+
+
+    public function updateDeviceMode(Request $request,  $id)
+    {
+        try{
+            $device = Device::find($id);
+            if(!$device){
+                throw new exception("Device name not found");
+            }          
+
+            if($device){        
+                $device->deviceMode = $request->deviceMode;
+                $device->save();
+                $response = [
+                    "message" => "Device mode updated successfully"
+                ];
+                $status = 200;             
+            }   
+        }catch(Exception $e){
+            $response = [
+                "message"=>$e->getMessage()
+            ];
+            $status = 409;
+        }
+                    
+        return response($response,$status); 
+    }
+
+    
 }

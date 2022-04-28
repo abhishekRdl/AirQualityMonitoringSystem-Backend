@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\UTILITY\DataUtilityController;
 use Illuminate\Http\Request;
 use App\Models\Location;
 use Exception;
 use App\Exceptions\CustomException;
 use Illuminate\Database\QueryException;
-use App\Http\Controllers\UTILITY\DataUtilityController;
+use Illuminate\Support\Facades\DB;
 
 
 class LocationController extends Controller
@@ -48,7 +49,7 @@ class LocationController extends Controller
         $getData = new DataUtilityController($request,$query);
         $response = $getData->getData();
         $status = 200;
-
+        
         return response($response,$status);        
     
     }
@@ -85,22 +86,35 @@ class LocationController extends Controller
             $userRole = $request->Header('userRole');
         }        
 
-        $location = Location::where('stateName', $request->stateName)->first();  
-        if($location){
-            throw new CustomException("Location name already exist");
-        }else{
-            $location = new Location;
-            $location->companyCode = $companyCode;
-            $location->stateName = $request->stateName;           
-            // $location->latitude = $request->latitude;   
-            // $location->longitude = $request->longitude;  
-            $location->coordinates = $request->coordinates;
-            $location->save();
+        //$location = Location::where('stateName', $request->stateName)->first();  
+        try{
+           $location = DB::table('locations')
+                        ->where('companyCode', '=', $companyCode)
+                        ->where('stateName', '=', $request->stateName)
+                        ->first();
+                      
+            if($location){
+                throw new CustomException("Location name already exist");
+            }else{
+                $location = new Location;
+                $location->companyCode = $companyCode;
+                $location->stateName = $request->stateName;           
+                // $location->latitude = $request->latitude;   
+                // $location->longitude = $request->longitude;  
+                $location->coordinates = $request->coordinates;
+                $location->save();
+                $response = [
+                    "message" => "Location name added successfully"
+                ];
+                $status = 201;     
+        }    
+        }catch(QueryException $e){
             $response = [
-                "message" => "Location name added successfully"
+                "error" => $e->errorInfo
             ];
-            $status = 201;     
-        }     
+            $status = 406; 
+       }
+          
 
         return response($response,$status);       
        
@@ -151,9 +165,21 @@ class LocationController extends Controller
 
       
         $location = Location::find($id);
+        
+        $locationDataFound = DB::table('locations')
+                            ->where('companyCode', '=', $this->companyCode)  
+                            ->where('stateName', '=', $request->stateName)
+                            ->where('id','<>',$id)                
+                            ->first();
+                            
+                            
         if(!$location){
             throw new CustomException("Location name not found");
-        }else{
+        }
+        else if($locationDataFound){
+            throw new CustomException("Location name already exist");
+        }
+        else{
             try{
                 $location->companyCode = $companyCode;
                 $location->stateName = $request->stateName;           

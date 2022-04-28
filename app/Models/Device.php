@@ -26,6 +26,8 @@ class Device extends Model
         'deviceImage',
         'deviceTag',
         'nonPollingPriority',
-        'pollingPriority'
+        'pollingPriority',
+
+        'deviceMode'
     ];
 }
