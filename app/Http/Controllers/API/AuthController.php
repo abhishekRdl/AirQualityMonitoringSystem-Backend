@@ -635,15 +635,15 @@ class AuthController extends Controller
 
     public function logout(){
         
-        // $userEmail = Auth::user()->email;
-        // $userId = Auth::user()->name;
-        // $companyCode = Auth::user()->companyCode;
-        // $userLog = new userLog();
-        // $userLog->userId =$userId;
-        // $userLog->userEmail =$userEmail;
-        // $userLog->companyCode =$companyCode;
-        // $userLog->action = "LoggedOut";
-        // $userLog->save();
+        $userEmail = Auth::user()->email;
+        $userId = Auth::user()->name;
+        $companyCode = Auth::user()->companyCode;
+        $userLog = new userLog();
+        $userLog->userId =$userId;
+        $userLog->userEmail =$userEmail;
+        $userLog->companyCode =$companyCode;
+        $userLog->action = "LoggedOut";
+        $userLog->save();
         
         
         auth()->user()->tokens()->delete();  
