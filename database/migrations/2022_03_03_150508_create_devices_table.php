@@ -40,7 +40,9 @@ class CreateDevicesTable extends Migration
             $table->text('pollingPriority')->nullable();
             $table->text('dataPushUrl')->nullable();
             $table->text('firmwarePushUrl')->nullable();            
-            $table->text('deviceMode')->nullable();            
+            $table->text('deviceMode')->nullable();           
+            $table->boolean('firmwareStatus')->default('0')->after('deviceMode');     
+            $table->boolean('configurationStatus')->default('0')->after('firmwareStatus');     
             $table->timestamps();
         });
     }

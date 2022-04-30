@@ -28,6 +28,9 @@ class Device extends Model
         'nonPollingPriority',
         'pollingPriority',
 
-        'deviceMode'
+        'deviceMode',
+
+        'firmwareStatus',
+        'configurationStatus'
     ];
 }
