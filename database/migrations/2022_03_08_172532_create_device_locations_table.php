@@ -39,6 +39,7 @@ class CreateDeviceLocationsTable extends Migration
             $table->text('macAddress');
             $table->text('deviceIcon');            
             $table->text('floorCords')->nullable();  
+            
             $table->timestamps();           
         }); 
     }

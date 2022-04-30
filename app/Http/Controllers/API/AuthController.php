@@ -194,22 +194,22 @@ class AuthController extends Controller
                 
                 $sec_level_auth = $user->sec_level_auth;
                 
-                // $userLog = new userLog();
-                // $userLog->userId =$user->name;
-                // $userLog->userEmail =$user->email;
-                // $userLog->companyCode =$user->companyCode;
-                // $userLog->action = "LoggedIn";
-                // $userLog->save();
-                
+                $userLog = new userLog();
+                $userLog->userId =$user->name;
+                $userLog->userEmail =$user->email;
+                $userLog->companyCode =$user->companyCode;
+                $userLog->action = "LoggedIn";
+                $userLog->save();                
                 
                 $logoPath = "";
+
                 if($user->user_role == "superAdmin"){
+                    $user = User::where('companyCode', $user->companyCode)->first();  
                     $logoPath = $user->companyLogo;
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
                     $logoPath = $customer->customerLogo;
-                }
-                
+                }                
                 
                 if($sec_level_auth == 0){
                     $user_feature = "false";
@@ -217,19 +217,18 @@ class AuthController extends Controller
                    
                     $user->login_fail_attempt = 0;
                     $user->last_login_ativity = $this->current_time;
-                    $user->update(); 
-   
+                    $user->update();    
                     
                     $response = [
                         'userDetails'=>[
                             // 'email'=>$this->hide_email($user->email),
                             'emailId'=>$user->email,
                             'secondLevelAuthorization'=>$user_feature,
+                            'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
                             'companyLogo'=>$logoPath,
-                            'forcePasswordReset'=>$user->changePassword,
-                           
+                            'forcePasswordReset'=>$user->changePassword,                           
                         ],
                         'locationDetails'=>[
                             'location_id'=>$user->location_id,
@@ -255,11 +254,11 @@ class AuthController extends Controller
                             // 'email'=>$this->hide_email($user->email),
                             'emailId'=>$user->email,
                             'secondLevelAuthorization'=>$user_feature,
+                            'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
                             'companyLogo'=>$logoPath,
-                            'forcePasswordReset'=>$user->changePassword 
-                            
+                            'forcePasswordReset'=>$user->changePassword                             
                         ],
                         'locationDetails'=>[
                             'location_id'=>$user->location_id,
@@ -635,15 +634,15 @@ class AuthController extends Controller
 
     public function logout(){
         
-        // $userEmail = Auth::user()->email;
-        // $userId = Auth::user()->name;
-        // $companyCode = Auth::user()->companyCode;
-        // $userLog = new userLog();
-        // $userLog->userId =$userId;
-        // $userLog->userEmail =$userEmail;
-        // $userLog->companyCode =$companyCode;
-        // $userLog->action = "LoggedOut";
-        // $userLog->save();
+        $userEmail = Auth::user()->email;
+        $userId = Auth::user()->name;
+        $companyCode = Auth::user()->companyCode;
+        $userLog = new userLog();
+        $userLog->userId =$userId;
+        $userLog->userEmail =$userEmail;
+        $userLog->companyCode =$companyCode;
+        $userLog->action = "LoggedOut";
+        $userLog->save();
         
         
         auth()->user()->tokens()->delete();  
