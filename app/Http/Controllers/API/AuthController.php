@@ -355,8 +355,7 @@ class AuthController extends Controller
                         $user->update();
                     }              
                    
-                    //for mobile no
-                     code 
+                    //for mobile no code
                     $this->sms($msg,$contact_no);     //sending otp to mobilenumber    
                     
                     $data = [
