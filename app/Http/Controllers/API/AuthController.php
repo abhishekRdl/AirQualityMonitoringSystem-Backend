@@ -209,7 +209,8 @@ class AuthController extends Controller
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
                     $logoPath = $customer->customerLogo;
-                }                
+                }             
+                
                 
                 if($sec_level_auth == 0){
                     $user_feature = "false";
@@ -217,7 +218,8 @@ class AuthController extends Controller
                    
                     $user->login_fail_attempt = 0;
                     $user->last_login_ativity = $this->current_time;
-                    $user->update();    
+                    $user->update();                     
+                    
                     
                     $response = [
                         'userDetails'=>[
@@ -249,6 +251,38 @@ class AuthController extends Controller
                     $user->last_login_ativity = $this->current_time;
                     $user->update(); 
 
+                    
+                    //newly changes made on 4-30-2022 
+                    //on login otp number sent to mobileno and email by checking second leve authentication
+
+                    $otp = rand(1000,9999);              
+                    $otpgenerated_at = date('Y-m-d H:i:s');//otp generating time
+                    
+                    $email = $user->email;
+                    $contact_no = $user->mobileno;
+                    $msg = "Your AILAB AQMI Registration OTP is {$otp}.- RDL TECHNOLOGY PVT LTD";
+    
+                    if($user){
+                        $user->otpno = $otp;
+                        $user->otpgenerated_at = $otpgenerated_at;
+                        $user->isverified=0;
+                        $user->update();
+                    }              
+                   
+                    //for mobile no code 
+                    $this->sms($msg,$contact_no);     //sending otp to mobilenumber    
+                    
+                    $data = [
+                        'userid'=>$user->name,
+                        'subject' => 'Application OTP',
+                        'body' => 'Your OTP is : '. $otp
+                    ];
+                
+                    Mail::send('mail',$data, function($messages) use ($user){
+                        $messages->to($user->email);
+                        $messages->subject('OTP verification');        
+                    }); 
+
                     $response = [
                         'userDetails'=>[
                             // 'email'=>$this->hide_email($user->email),
@@ -275,6 +309,10 @@ class AuthController extends Controller
         }          
         return response($response,$status);
     } 
+
+
+    //since opt is sent on direct login, function otp is not used
+    //changes impacted on 4-30-2020
 
     public function sendOtp(Request $request){   
         if($request->email == ""  && $request->mobileno == ""){  
@@ -317,7 +355,8 @@ class AuthController extends Controller
                         $user->update();
                     }              
                    
-                    //for mobile no code 
+                    //for mobile no
+                     code 
                     $this->sms($msg,$contact_no);     //sending otp to mobilenumber    
                     
                     $data = [
