@@ -18,7 +18,7 @@ class CreateBranchesTable extends Migration
             $table->string('companyCode');
             $table->bigInteger('location_id')->unsigned();  
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');  
-            $table->string('branchName')->unique();           
+            $table->string('branchName')->nullable();           
             $table->text('coordinates');
             $table->timestamps();
         });
