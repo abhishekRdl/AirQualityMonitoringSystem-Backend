@@ -23,6 +23,13 @@ class LabDepartmentController extends Controller
      */
 
     protected $companyCode = "";    
+    
+    public function encodeImageFormat($strimg){
+    	$splittedData = explode("/",$strimg);
+        $format = $splittedData[1];
+        $imageFormat = explode(";",$format);
+        return $imageFormat[0];
+    }
 
     function __construct(Request $request) {
         $getData = new UtilityController($request);
@@ -89,9 +96,26 @@ class LabDepartmentController extends Controller
             $image = $request->labDepMap;  // your base64 encodedyjdfty
 
             if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->labDepMap);
+                
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                   $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".jpg";
+                }
+                if($format == "png"){
+                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".png";
+                }
+                if($format == "jpeg"){
+                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".jpeg";
+                }
+                
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->labDepMap);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->labDepName.".png";
+                // $imageName =  $request->labDepName.".png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings/Floors/Department";     
                 $imagePath = $path."/".$imageName;        
@@ -185,14 +209,31 @@ class LabDepartmentController extends Controller
             $image = $request->labDepMap;  // your base64 encoded
 
             if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->labDepMap);
+                
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                   $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".jpg";
+                }
+                if($format == "png"){
+                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".png";
+                }
+                if($format == "jpeg"){
+                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->labDepName.".jpeg";
+                }                
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->labDepMap);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->labDepName.".png";
+                // $imageName =  $request->labDepName.".png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings/Floors/Department";     
                 $imagePath = $path."/".$imageName;        
                 Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
-                $labDepartment->labDepMap = $imagePath;              
+                $labDepartment->labDepMap = $imagePath;  
+
             }            
             
             $labDepartment->labCords = $request->labCords;                    

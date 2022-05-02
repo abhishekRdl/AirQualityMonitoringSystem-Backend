@@ -24,7 +24,14 @@ class FloorController extends Controller
 
 
     protected $companyCode = "";    
-
+    
+    public function encodeImageFormat($strimg){
+    	$splittedData = explode("/",$strimg);
+        $format = $splittedData[1];
+        $imageFormat = explode(";",$format);
+        return $imageFormat[0];
+    }
+    
     function __construct(Request $request) {
         $getData = new UtilityController($request);
         $this->companyCode = $getData->getCompanyCode();
@@ -94,9 +101,26 @@ class FloorController extends Controller
             $image = $request->floorMap;  // your base64 encoded
 
             if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->floorMap);
+                
+                
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $imageName =  $request->floorStage.".jpg";
+                }
+                if($format == "png"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->floorStage.".png";
+                }
+                if($format == "jpeg"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->floorStage.".jpeg";
+                }
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->floorMap);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->floorStage.".png";
+                // $imageName =  $request->floorStage.".png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings/Floors";     
                 $imagePath = $path."/".$imageName;        
@@ -195,14 +219,30 @@ class FloorController extends Controller
 
             if($image){
                 
-                $image = str_replace('data:image/png;base64,', '', $request->floorMap);
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $imageName =  $request->floorStage.".jpg";
+                }
+                if($format == "png"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $imageName =  $request->floorStage.".png";
+                }
+                if($format == "jpeg"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->floorStage.".jpeg";
+                }
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->floorMap);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->floorStage.".png";
+                // $imageName =  $request->floorStage.".png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings/Floors";     
                 $imagePath = $path."/".$imageName;        
                 Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
-                $floor->floorMap = $imagePath;              
+                $floor->floorMap = $imagePath;  
+                         
             }            
             
             $floor->floorCords = $request->floorCords;                    

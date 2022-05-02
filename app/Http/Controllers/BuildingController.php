@@ -30,7 +30,14 @@ class BuildingController extends Controller
         $this->companyCode = $getData->getCompanyCode();
         
     }
-
+    
+    public function encodeImageFormat($strimg){
+    	$splittedData = explode("/",$strimg);
+        $format = $splittedData[1];
+        $imageFormat = explode(";",$format);
+        return $imageFormat[0];
+    }
+    
     public function index(Request $request)
     {
         $query = Building::query();
@@ -98,9 +105,26 @@ class BuildingController extends Controller
             
             $image = $request->buildingImg;  // your base64 encoded
             if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->buildingImg);
+                
+                
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.jpg";
+                }
+                if($format == "png"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.png";
+                }
+                if($format == "jpeg"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.jpeg";
+                }
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->buildingImg);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->buildingName."_Building.png";
+                // $imageName =  $request->buildingName."_Building.png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings";     
                 $imagePath = $path."/".$imageName;        
@@ -194,14 +218,31 @@ class BuildingController extends Controller
             
             $image = $request->buildingImg;  // your base64 encoded
             if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->buildingImg);
+                
+                $format = $this->encodeImageFormat($imageLogo);
+               
+                if($format == "jpg"){
+                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.jpg";
+                }
+                if($format == "png"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.png";
+                }
+                if($format == "jpeg"){
+                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $imageName =  $request->buildingName."_Building.jpeg";
+                }
+                
+                //$image = str_replace('data:image/png;base64,', '', $request->buildingImg);
                 $image = str_replace(' ', '+', $image);
-                $imageName =  $request->buildingName."_Building.png";
+                // $imageName =  $request->buildingName."_Building.png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings";     
                 $imagePath = $path."/".$imageName;        
                 Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
-                $building->buildingImg = $imagePath;              
+                $building->buildingImg = $imagePath;    
+
             }
             
             
