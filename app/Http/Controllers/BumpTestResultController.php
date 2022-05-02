@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\UTILITY\DataUtilityController;
+use Illuminate\Support\Facades\DB;
 use App\Models\BumpTestResult;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,25 @@ class BumpTestResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() 
+    public function index(Request $request) 
     {
-        
+        try{ 
+            $query = DB::table('bump_test_results')
+            ->select('*')
+            ->where('sensorTagName','=',$request->sensorTagName);            
+            
+            $getData = new DataUtilityController($request,$query);
+            
+            $response = $getData->getData();           
+            $status = 200;
+
+        }catch(Exception $e){
+            $response = [
+                "error" =>  $e->getMessage()
+            ];    
+            $status = 404;       
+        }        
+        return response($response,$status);
     }
 
     /**
@@ -35,7 +52,25 @@ class BumpTestResultController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $current_time = date('Y-m-d H:i:s');         
+        $bumptestresult = new BumpTestResult;
+        $bumptestresult->sensorTagName = $request->sensorTagName;
+        $bumptestresult->lastDueDate = $request->lastDueDate;
+        $bumptestresult->typeCheck = $request->typeCheck;
+        $bumptestresult->percentageConcentrationGas = $request->percentageConcentrationGas;
+        $bumptestresult->durationPeriod = $request->durationPeriod;
+        $bumptestresult->displayedValue = $request->displayedValue;
+        $bumptestresult->percentageDeviation = $request->percentageDeviation;
+        $bumptestresult->calibrationDate = $current_time;
+        $bumptestresult->nextDueDate = $request->nextDueDate;
+        $bumptestresult->result = $request->result;      
+        $bumptestresult->save();
+        $response = [
+            "message" => "Bump test Result added successfully"
+        ];
+        $status = 201;       
+
+        return response($response,$status);
     }
 
     /**
@@ -83,3 +118,18 @@ class BumpTestResultController extends Controller
         //
     }
 }
+
+
+//Request input
+// {
+//     "sensorTagName":"HydroSen-02",
+//     "lastDueDate":"22-08-2022",
+//     "typeCheck":"span",
+//     "percentageConcentrationGas":"23",
+//     "durationPeriod":"5",
+//     "displayedValue":"35",
+//     "percentageDeviation":"65",
+//     "calibrationDate":"22-08-2022",
+//     "nextDueDate":"26-08-2022",
+//     "result":"fail"
+// }

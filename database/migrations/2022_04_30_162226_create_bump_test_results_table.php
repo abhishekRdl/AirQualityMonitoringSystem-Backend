@@ -19,10 +19,12 @@ class CreateBumpTestResultsTable extends Migration
             $table->text('lastDueDate')->nullable();   
             $table->text('typeCheck')->nullable();   
             $table->text('percentageConcentrationGas')->nullable();   
-            $table->text('pollingPriorityValue')->nullable();   
+            $table->text('durationPeriod')->nullable();   
             $table->text('displayedValue')->nullable();   
             $table->text('percentageDeviation')->nullable();   
+            $table->text('calibrationDate')->nullable();
             $table->text('nextDueDate')->nullable();   
+            $table->text('result')->nullable();
             $table->timestamps();
         });
     }

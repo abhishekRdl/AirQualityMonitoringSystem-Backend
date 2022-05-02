@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class BumpTestResult extends Model
 {
     use HasFactory;
+    
 }

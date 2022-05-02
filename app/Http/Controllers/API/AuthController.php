@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserLog;
 use App\Models\Customer;
 use RateLimiter;
 use Illuminate\Support\Facades\Hash;

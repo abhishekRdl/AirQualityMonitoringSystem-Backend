@@ -24,7 +24,7 @@ use App\Http\Controllers\ConfigSetupController;
 use App\Http\Controllers\DeviceConfigSetupController;
 use App\Http\Controllers\AqmiJsonDataController;
 use App\Http\Controllers\AqiChartConfigValuesController;
-
+use App\Http\Controllers\BumpTestResultController;
 
 
 /*
@@ -173,31 +173,44 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
 
+
+
+
 });
 
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
-
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
-
-
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);     
+
+
+
+
+Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+
+//local
+// {
+//     "email":"developer2@rdltech.in",
+//     "password":"WgePhnShen"
+// }
+
+//server
+// {
+//     "email":"developer2@rdltech.in",
+//     "password":"FJbwvYvEgr"
+// }
+
+
+
+
+
+
+
+
+
+
 
 
   
