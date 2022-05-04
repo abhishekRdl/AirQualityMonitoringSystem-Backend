@@ -100,9 +100,11 @@ class DeviceController extends Controller
             $device->firmwareVersion = $request->firmwareVersion;   
             $device->macAddress = $request->macAddress;  
             
+            $fimwareBinFile = $request->firmwareBinFile;
 
             $image = $request->deviceImage;  // your base64 encoded
 
+            //Image file creation
             if($image){
                 $image = str_replace('data:image/png;base64,', '', $request->deviceImage);
                 $image = str_replace(' ', '+', $image);
@@ -120,23 +122,29 @@ class DeviceController extends Controller
             //datapush file creation
             $dataPushFileName =  $request->deviceName."_DataPush.json";
             $dataPushdata = json_encode(['Element 1','Element 2','Element 3','Element 4','Element 5']);
-            $dataPushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile";     
+            $dataPushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile/dataPush";     
             Storage::disk('public_uploads')->put($dataPushUrlpath."/".$dataPushFileName, $dataPushdata); 
 
             
             //firmwarepush file creation
-            // $firmwarePushFileName =  $request->deviceName."_firmwarePush.json";
-            // $firmwarePushdata = json_encode(['Element 1','Element 2','Element 3','Element 4','Element 5']);
-            $firmwarePushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile"; 
-
-            //Storage::disk('public_uploads')->put($accessPath.$firmwarePushUrlpath."/".$firmwarePushFileName, $firmwarePushdata); 
+            
+            if($fimwareBinFile){
+                $firmwarePushdata = str_replace('data:application/octet-stream;base64,', '', $request->firmwareBinFile);
+                $firmwarePushdata = str_replace(' ', '+', $firmwarePushdata);
+                $firmwarePushFileName =  $request->deviceName."_firmware.bin";           
+                $firmwarePushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile/dataPush"; 
+                Storage::disk('public_uploads')->put($firmwarePushUrlpath."/".$firmwarePushFileName, base64_decode($firmwarePushdata)); 
+            }
+            
             
             $device->deviceTag =  $request->deviceTag;  
             $device->nonPollingPriority =  $request->nonPollingPriority;  
             $device->pollingPriority =  $request->pollingPriority;  
             
             $device->dataPushUrl = $accessPath.$dataPushUrlpath."/".$dataPushFileName;
-            $device->firmwarePushUrl = $accessPath.$firmwarePushUrlpath;
+            $device->firmwarePushUrl = $accessPath.$firmwarePushUrlpath."/".$firmwarePushFileName;
+
+            $device->xAxisTimeInterval = $request->xAxisTimeInterval;
             
             $device->save();
             $response = [
@@ -237,25 +245,52 @@ class DeviceController extends Controller
                 $device->firmwareVersion = $request->firmwareVersion;   
                 $device->macAddress = $request->macAddress;      
                 
-                $image = $request->deviceImage;  // your base64 encoded
+                $fimwareBinFile = $request->firmwareBinFile;
 
+                $image = $request->deviceImage;  // your base64 encoded
+    
+                //Image file creation
                 if($image){
                     $image = str_replace('data:image/png;base64,', '', $request->deviceImage);
                     $image = str_replace(' ', '+', $image);
-                    $imageName = $request->deviceName.".png";
+                    $imageName =  $request->deviceName.".png";
                     //$picture   = date('His').'-'.$filename;                
                     $path = "Customers/".$this->companyCode."/Buildings/devices";     
                     $imagePath = $path."/".$imageName;        
                     Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
                     $device->deviceImage = $imagePath;              
-                }               
+                }        
                 
-                // $device->deviceIcon =  $request->deviceIcon;
+            
+                $accessPath = "http://varmatrix.com/Aqms/blog/public/";
                 
-                $device->deviceTag =  $request->deviceTag;     
+                //datapush file creation
+                $dataPushFileName =  $request->deviceName."_DataPush.json";
+                $dataPushdata = json_encode(['Element 1','Element 2','Element 3','Element 4','Element 5']);
+                $dataPushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile";     
+                Storage::disk('public_uploads')->put($dataPushUrlpath."/".$dataPushFileName, $dataPushdata); 
+    
                 
+                //firmwarepush file creation
+                
+                if($fimwareBinFile){
+                    $firmwarePushdata = str_replace('data:application/octet-stream;base64,', '', $request->firmwareBinFile);
+                    $firmwarePushdata = str_replace(' ', '+', $firmwarePushdata);
+                    $firmwarePushFileName =  $request->deviceName."_firmware.bin";           
+                    $firmwarePushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile/".$firmwarePushFileName; 
+                    Storage::disk('public_uploads')->put($accessPath.$firmwarePushUrlpath."/".$firmwarePushFileName, base64_decode($firmwarePushdata)); 
+                }
+                
+                
+                $device->deviceTag =  $request->deviceTag;  
                 $device->nonPollingPriority =  $request->nonPollingPriority;  
                 $device->pollingPriority =  $request->pollingPriority;  
+                
+                $device->dataPushUrl = $accessPath.$dataPushUrlpath."/".$dataPushFileName;
+                $device->firmwarePushUrl = $accessPath.$firmwarePushUrlpath;
+    
+                $device->xAxisTimeInterval = $request->xAxisTimeInterval;
+
                 
                 $device->save();
                 $response = [
@@ -322,7 +357,8 @@ class DeviceController extends Controller
                 $device->deviceMode = $request->deviceMode;
                 $device->save();
                 $response = [
-                    "message" => "Device mode updated successfully"
+                    "message" => "Device mode updated successfully",
+                    "deviceMode"=> $request->deviceMode
                 ];
                 $status = 200;             
             }   
@@ -334,7 +370,7 @@ class DeviceController extends Controller
         }
                     
         return response($response,$status); 
-    }
-
-    
+    }    
 }
+
+

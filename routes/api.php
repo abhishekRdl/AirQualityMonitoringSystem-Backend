@@ -25,6 +25,7 @@ use App\Http\Controllers\DeviceConfigSetupController;
 use App\Http\Controllers\AqmiJsonDataController;
 use App\Http\Controllers\AqiChartConfigValuesController;
 use App\Http\Controllers\BumpTestResultController;
+use App\Http\Controllers\CalibrationTestResultController;
 
 
 /*
@@ -153,6 +154,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('sensor/add',[SensorController::class,'store']);
     Route::post('sensor/{id}/update',[SensorController::class,'update']);
     Route::delete('sensor/{id}/delete',[SensorController::class,'destroy']);
+    Route::get('deviceDeployedSensors/{id}', [SensorController::class, 'deviceDeployedSensors']); 
+    Route::get('sensorTag', [SensorController::class, 'getSensorTagData']);
     
     //sensorUnit
     Route::get('sensorUnit/{id}', [SensorUnitController::class, 'index']);
@@ -173,8 +176,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
 
+    Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+    Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 
-
+    Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
+    Route::get('calibrationTestResult', [CalibrationTestResultController::class, 'index']); 
 
 });
 
@@ -187,8 +193,10 @@ Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);
 
 
 
-Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
-Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+
+
+
+
 
 //local
 // {
@@ -199,7 +207,7 @@ Route::get('bumpTestResult', [BumpTestResultController::class, 'index']);
 //server
 // {
 //     "email":"developer2@rdltech.in",
-//     "password":"FJbwvYvEgr"
+//     "password":"123456"
 // }
 
 

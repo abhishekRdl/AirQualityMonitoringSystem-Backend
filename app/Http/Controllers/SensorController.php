@@ -83,8 +83,7 @@ class SensorController extends Controller
                             // 'facility_id', 
                             // 'building_id',
                             // 'floor_id',
-                            // 'lab_id',
-                                                
+                            // 'lab_id',                                              
                           
                             
                             'categoryId',//1
@@ -399,9 +398,7 @@ class SensorController extends Controller
            
             if($sensorDataFound){
                 throw new Exception("{$request->sensorTag} sensor is already deployed for device ");
-            }          
-
-
+            }         
 
             $sensor = new Sensor;           
             
@@ -475,7 +472,6 @@ class SensorController extends Controller
             $sensor->digitalHighAlert = $request->digitalHighAlert;
 
 
-
             $sensor->isStel = $request->isStel;                
             $sensor->stelDuration = $request->stelDuration;
             $sensor->stelType = $request->stelType;
@@ -489,20 +485,23 @@ class SensorController extends Controller
 
             $sensor->alarm = $request->alarm;
             $sensor->unLatchDuration = $request->unLatchDuration;  
+            
+            $sensor->isAQI = $request->isAQI;         
+            $sensor->parmGoodMinScale = $request->parmGoodMinScale;
+            $sensor->parmGoodMaxScale = $request->parmGoodMaxScale;
+            $sensor->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
+            $sensor->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
+            $sensor->parmModerateMinScale = $request->parmModerateMinScale;
+            $sensor->parmModerateMaxScale = $request->parmModerateMaxScale;
+            $sensor->parmPoorMinScale = $request->parmPoorMinScale;
+            $sensor->parmPoorMaxScale = $request->parmPoorMaxScale;
+            $sensor->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
+            $sensor->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
+            $sensor->parmSevereMinScale = $request->parmSevereMinScale;
+            $sensor->parmSevereMaxScale = $request->parmSevereMaxScale;
 
-            $sensorUnit->isAQI = $request->isAQI;         
-            $sensorUnit->parmGoodMinScale = $request->parmGoodMinScale;
-            $sensorUnit->parmGoodMaxScale = $request->parmGoodMaxScale;
-            $sensorUnit->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
-            $sensorUnit->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
-            $sensorUnit->parmModerateMinScale = $request->parmModerateMinScale;
-            $sensorUnit->parmModerateMaxScale = $request->parmModerateMaxScale;
-            $sensorUnit->parmPoorMinScale = $request->parmPoorMinScale;
-            $sensorUnit->parmPoorMaxScale = $request->parmPoorMaxScale;
-            $sensorUnit->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
-            $sensorUnit->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
-            $sensorUnit->parmSevereMinScale = $request->parmSevereMinScale;
-            $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
+            $sensor->relayOutput = $request->relayOutput;
+            $sensor->sensorFault = $request->sensorFault;  
             
                 
 
@@ -664,7 +663,25 @@ class SensorController extends Controller
 
                 $sensor->alarm = $request->alarm;
                 $sensor->unLatchDuration = $request->unLatchDuration;  
-                    
+                
+                $sensor->isAQI = $request->isAQI;         
+                $sensor->parmGoodMinScale = $request->parmGoodMinScale;
+                $sensor->parmGoodMaxScale = $request->parmGoodMaxScale;
+                $sensor->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
+                $sensor->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
+                $sensor->parmModerateMinScale = $request->parmModerateMinScale;
+                $sensor->parmModerateMaxScale = $request->parmModerateMaxScale;
+                $sensor->parmPoorMinScale = $request->parmPoorMinScale;
+                $sensor->parmPoorMaxScale = $request->parmPoorMaxScale;
+                $sensor->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
+                $sensor->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
+                $sensor->parmSevereMinScale = $request->parmSevereMinScale;
+                $sensor->parmSevereMaxScale = $request->parmSevereMaxScale;
+
+
+                $sensor->relayOutput = $request->relayOutput;
+                $sensor->sensorFault = $request->sensorFault;    
+
                 $sensor->save();
                 $response = [
                     "message" => "Sensor updated successfully"
@@ -714,5 +731,18 @@ class SensorController extends Controller
         }
                     
         return response($response,$status); 
+    }
+
+    public function deviceDeployedSensors($id)
+    {
+        $query = Sensor::select('sensorTag');
+        $query->where('deviceId','=',$id);      
+       
+
+
+        $response = $query->get();
+        $status = 200;
+        
+        return response($response,$status);
     }
 }

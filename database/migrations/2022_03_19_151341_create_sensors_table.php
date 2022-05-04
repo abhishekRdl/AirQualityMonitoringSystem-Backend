@@ -111,6 +111,10 @@ class CreateSensorsTable extends Migration
             $table->text('parmVeryPoorMaxScale')->nullable();
             $table->text('parmSevereMinScale')->nullable();
             $table->text('parmSevereMaxScale')->nullable();   
+
+
+            $table->text('relayOutput')->nullable();
+            $table->text('sensorFault')->nullable();
             
             $table->timestamps();
         });

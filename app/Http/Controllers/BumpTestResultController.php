@@ -16,13 +16,30 @@ class BumpTestResultController extends Controller
     public function index(Request $request) 
     {
         try{ 
+            if($request->sensorTagName == ""){
+                throw new Exception("Please Select the sensorTag name");
+            }
+            
+             $nextDueDate = DB::table('bump_test_results')
+                            ->select('nextDueDate')
+                            ->where('sensorTagName','=',$request->sensorTagName)
+                            ->orderBy('id', 'DESC')->first();
+            $date = "";
+            if($nextDueDate){
+                $date = $nextDueDate->nextDueDate;
+            }
+           
             $query = DB::table('bump_test_results')
             ->select('*')
             ->where('sensorTagName','=',$request->sensorTagName);            
             
             $getData = new DataUtilityController($request,$query);
             
-            $response = $getData->getData();           
+            $response = [
+                "nextDueDate"=>$date,
+                 "data"=>$getData->getData()['data']
+            ];
+            
             $status = 200;
 
         }catch(Exception $e){
@@ -33,7 +50,6 @@ class BumpTestResultController extends Controller
         }        
         return response($response,$status);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -50,7 +66,8 @@ class BumpTestResultController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    
+     public function store(Request $request)
     {
         $current_time = date('Y-m-d H:i:s');         
         $bumptestresult = new BumpTestResult;
@@ -66,11 +83,9 @@ class BumpTestResultController extends Controller
         $bumptestresult->result = $request->result;      
         $bumptestresult->save();
         $response = [
-            "message" => "Bump test Result added successfully"
+            "message" => "Calibration test Result added successfully"
         ];
         $status = 201;       
-
-        return response($response,$status);
     }
 
     /**
