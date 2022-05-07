@@ -654,4 +654,17 @@ class AuthController extends Controller
         return response($response,$status);
     } 
 
+    public function UserList(Request $request)
+    {
+       $companyCode = $this->companyCode;
+       $query = User::select('name');
+       $query->where('companyCode','=',$companyCode);
+       $query->where('location_id','=',$request->location_id);
+       $query->where('branch_id','=',$request->branch_id);
+       $query->where('facility_id','=',$request->facility_id);
+       $response = $query->get();
+       $status = 200;
+       return response($response,$status);
+    }
+
 }

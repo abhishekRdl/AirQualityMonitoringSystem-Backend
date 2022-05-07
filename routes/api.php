@@ -180,9 +180,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 
     Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
-    Route::get('calibrationTestResult', [CalibrationTestResultController::class, 'index']); 
+    Route::get('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
+    
+
+    Route::post('UserList', [AuthController::class, 'UserList']);
+
+    Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);
 
 });
+
 
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
