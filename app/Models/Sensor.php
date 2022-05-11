@@ -114,9 +114,10 @@ class Sensor extends Model
         'parmSevereMaxScale',  
 
         'relayOutput',
-        'sensorFault',
-        
-        
+        'sensorFault',       
+
+        'sensorStatus',
+        'notificationStatus'    
 
         
 

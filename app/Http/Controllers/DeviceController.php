@@ -358,7 +358,8 @@ class DeviceController extends Controller
                 $device->save();
                 $response = [
                     "message" => "Device mode updated successfully",
-                    "deviceMode"=> $request->deviceMode
+                    "deviceMode"=> $request->deviceMode,
+                    "deviceId"=>$id
                 ];
                 $status = 200;             
             }   

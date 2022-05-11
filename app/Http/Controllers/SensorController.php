@@ -745,4 +745,21 @@ class SensorController extends Controller
         
         return response($response,$status);
     }
+
+    public function sensorPropertiesUpdate(Request $request,$id){
+        $sensor = Sensor::find($id);    
+        if($sensor){  
+            $sensor->sensorStatus=$request->sensorStatus;
+            $sensor->notificationStatus=$request->notificationStatus;
+            $sensor->update();
+            
+            $response = [
+                "message" => "Sensor Properties Updated successfully",
+                "sensor_id"=>$id
+            ];
+            $status = 200; 
+        }
+        
+        return response($response,$status);
+    }
 }

@@ -115,6 +115,9 @@ class CreateSensorsTable extends Migration
 
             $table->text('relayOutput')->nullable();
             $table->text('sensorFault')->nullable();
+
+            $table->text('sensorStatus')-nullable();
+            $table->text('notificationStatus')-nullable();
             
             $table->timestamps();
         });

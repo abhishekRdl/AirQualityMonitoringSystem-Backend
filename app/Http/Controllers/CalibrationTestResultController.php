@@ -5,6 +5,7 @@ use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\CalibrationTestResult;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UtilityController;
 
 class CalibrationTestResultController extends Controller
 {
@@ -13,16 +14,54 @@ class CalibrationTestResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() 
+
+    protected $companyCode = ""; 
+    
+    function __construct(Request $request) {
+        $getData = new UtilityController($request);
+        $this->companyCode = $getData->getCompanyCode();        
+    }
+
+
+    public function index(Request $request) 
     {
         try{ 
+           
+            if($request->sensorTag == ""){
+                throw new Exception("Please Select the sensorTag name");
+            }
+            
+            $nextDueDate = DB::table('calibration_test_results')
+                            ->select('nextDueDate')
+                            ->where('sensorTag','=',$request->sensorTag)
+                            ->where('companyCode','=',$this->companyCode)
+                            ->orderBy('id', 'DESC')->first();
+            $date = "";
+            if($nextDueDate){
+                $date = $nextDueDate->nextDueDate;
+            }
+            
+            $sensorUnitName =  DB::table('sensors')
+                            ->select('sensorNameUnit')
+                            ->where('sensorTag','=',$request->sensorTag)
+                            ->where('companyCode','=',$this->companyCode)
+                              ->orderBy('id', 'DESC')->first();
+            
+           
             $query = DB::table('calibration_test_results')
             ->select('*')
-            ->where('sensorTag','=',$request->sensorTagName);            
+            ->where('sensorTag','=',$request->sensorTag)
+            ->where('companyCode','=',$this->companyCode);   
+                     
             
             $getData = new DataUtilityController($request,$query);
             
-            $response = $getData->getData();           
+            $response = [
+                "lastDueDate"=>$date,
+                "sensorNameUnit"=>$sensorUnitName->sensorNameUnit,
+                "data"=>$getData->getData()['data']
+            ];
+            
             $status = 200;
 
         }catch(Exception $e){
@@ -57,6 +96,7 @@ class CalibrationTestResultController extends Controller
     {
         $current_time = date('Y-m-d H:i:s');         
         $calibrationtestresult = new CalibrationTestResult;
+        $calibrationtestresult->companyCode = $this->companyCode;
         $calibrationtestresult->sensorTag = $request->sensorTag;
         $calibrationtestresult->name = $request->name;
         $calibrationtestresult->model = $request->model;
@@ -118,14 +158,13 @@ class CalibrationTestResultController extends Controller
     }
 }
 
-
-//request
+// https://varmatrix.com/Aqms/api/calibrationTestResult/add
+// Method:POST
+// request
 // {
 //     "sensorTag":"pm10",
 //     "name":"pm",   
 //     "model":"25",   
 //     "testResult":"pass",   
-//     "calibrationDate":"22/08/2022",
-//     "nextDueDate":"23/08/2022",  
-    
+//     "nextDueDate":"23/08/2022",      
 // }

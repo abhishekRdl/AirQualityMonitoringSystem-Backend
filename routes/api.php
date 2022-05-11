@@ -156,6 +156,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('sensor/{id}/delete',[SensorController::class,'destroy']);
     Route::get('deviceDeployedSensors/{id}', [SensorController::class, 'deviceDeployedSensors']); 
     Route::get('sensorTag', [SensorController::class, 'getSensorTagData']);
+    Route::post('sensorProperties/{id}/update', [SensorController::class, 'sensorPropertiesUpdate']);
     
     //sensorUnit
     Route::get('sensorUnit/{id}', [SensorUnitController::class, 'index']);
@@ -180,12 +181,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 
     Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
-    Route::get('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
+    Route::post('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
     
-
-    Route::post('UserList', [AuthController::class, 'UserList']);
-
     Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);
+
+    Route::post('userListDetails', [AuthController::class, 'userListDetails']);  
+
+    Route::post('userLog', [AuthController::class, 'UserLogDetails']);
 
 });
 

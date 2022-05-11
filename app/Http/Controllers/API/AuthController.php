@@ -654,17 +654,103 @@ class AuthController extends Controller
         return response($response,$status);
     } 
 
-    public function UserList(Request $request)
+
+    public function UserLogDetails(Request $request){
+        $startDate = $request->fromDate;
+        $endDate = $request->toDate;
+        // $query = UserLog::select('*');
+        // $query->where(DATE('created_at'),'>=',$startDate);
+        // $query->where(DATE('created_at'),'<=',$endDate);
+        $query = UserLog::whereBetween('created_at', [$startDate, $endDate])
+                 ->where('userEmail','=',$this->userId)->get();   
+        $response = $query;
+        $status = 200;
+        return response($response,$status);
+    }
+
+    public function userListDetails(Request $request)
     {
-       $companyCode = $this->companyCode;
-       $query = User::select('name');
-       $query->where('companyCode','=',$companyCode);
-       $query->where('location_id','=',$request->location_id);
-       $query->where('branch_id','=',$request->branch_id);
-       $query->where('facility_id','=',$request->facility_id);
-       $response = $query->get();
-       $status = 200;
-       return response($response,$status);
+        $query = User::select('name');
+        
+        $location_id = $request->location_id;
+        $branch_id = $request->branch_id;
+        $facility_id = $request->facility_id;
+
+
+        $userRole = "";
+        $userId = "";
+        $companyCode = "";
+
+        if($request->hasHeader('companyCode')) {
+            $companyCode = $request->Header('companyCode');
+        }
+
+        if($request->hasHeader('userId')){
+            $userId = $request->Header('userId');
+        }
+
+        if($request->hasHeader('userRole')){
+            $userRole = $request->Header('userRole');
+        }
+
+        if($companyCode!="" || $userRole!= "" || $userId != ""){
+            if($userRole == "superAdmin"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('employeeId','<>','0000');             
+            }
+            elseif($userRole == "systemSpecialist"){
+                $query->where('companyCode','=',$companyCode)
+                   // ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');           
+            }
+            
+            elseif($userRole == "Admin"){
+                $query->where('companyCode','=',$companyCode)
+                   // ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');              
+            }
+            elseif($userRole == "Manager"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');            
+            }
+           elseif($userRole == "User"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('user_role','<>','Manager')
+                    ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');            
+            }
+
+            //SELECT * FROM `sampled_sensor_data_details` where DATE(sample_date_time)='2022-05-10' and HOUR(TIME(sample_date_time))='17' AND parameterName='NH3'
+        }
+        
+        if($location_id != "" && $branch_id != "" && $facility_id != "")
+        {
+            $query->where('facility_id','=',$facility_id);
+            $query->where('branch_id','=',$branch_id);
+            $query->where('location_id','=',$location_id);
+        }
+        
+        if($location_id != "" && $branch_id != "")
+        {
+            $query->where('branch_id','=',$branch_id);
+            $query->where('location_id','=',$location_id);
+        }
+        
+        if($location_id != "")
+        {
+            $query->where('location_id','=',$location_id);
+        }
+        
+        $getData = new DataUtilityController($request,$query);
+        $response =   $query->get();
+        $status = 200;
+        
+        return response($response,$status);
     }
 
 }

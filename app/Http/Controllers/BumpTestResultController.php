@@ -5,6 +5,7 @@ use App\Http\Controllers\UTILITY\DataUtilityController;
 use Illuminate\Support\Facades\DB;
 use App\Models\BumpTestResult;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UtilityController;
 
 class BumpTestResultController extends Controller
 {
@@ -13,6 +14,15 @@ class BumpTestResultController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $companyCode = ""; 
+    
+    function __construct(Request $request) {
+        $getData = new UtilityController($request);
+        $this->companyCode = $getData->getCompanyCode();        
+    }
+
+
     public function index(Request $request) 
     {
         try{ 
@@ -71,6 +81,7 @@ class BumpTestResultController extends Controller
     {
         $current_time = date('Y-m-d H:i:s');         
         $bumptestresult = new BumpTestResult;
+        $bumptestresult->companyCode = $this->companyCode;
         $bumptestresult->sensorTagName = $request->sensorTagName;
         $bumptestresult->lastDueDate = $request->lastDueDate;
         $bumptestresult->typeCheck = $request->typeCheck;
@@ -80,12 +91,19 @@ class BumpTestResultController extends Controller
         $bumptestresult->percentageDeviation = $request->percentageDeviation;
         $bumptestresult->calibrationDate = $current_time;
         $bumptestresult->nextDueDate = $request->nextDueDate;
-        $bumptestresult->result = $request->result;      
+        if($request->percentageDeviation >= 0 && $request->percentageDeviation <= 10){
+            $bumptestresult->result = "Pass";
+        }
+        else{
+            $bumptestresult->result = "Fail";
+        }
+             
         $bumptestresult->save();
         $response = [
-            "message" => "Calibration test Result added successfully"
+            "message" => "BumpTest Result added successfully"
         ];
         $status = 201;       
+        return response($response,$status);
     }
 
     /**
