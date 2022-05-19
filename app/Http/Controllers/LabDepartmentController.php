@@ -97,18 +97,18 @@ class LabDepartmentController extends Controller
 
             if($image){
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                   $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/jpg;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".jpg";
                 }
                 if($format == "png"){
-                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/png;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".png";
                 }
                 if($format == "jpeg"){
-                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/png;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".jpeg";
                 }
                 
@@ -210,18 +210,18 @@ class LabDepartmentController extends Controller
 
             if($image){
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                   $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/jpg;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".jpg";
                 }
                 if($format == "png"){
-                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/png;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".png";
                 }
                 if($format == "jpeg"){
-                   $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                   $image = str_replace('data:image/jpeg;base64,', '', $request->labDepMap);
                    $imageName =  $request->labDepName.".jpeg";
                 }                
                 

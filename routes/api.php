@@ -218,7 +218,11 @@ Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);
 //     "password":"123456"
 // }
 
-
+//git remote add upstream  git@github.com:teamlead-rdl/AirQualityMonitoringSystem.git
+//git remote
+//git pull
+//git pull upstream develop
+//git branch
 
 
 

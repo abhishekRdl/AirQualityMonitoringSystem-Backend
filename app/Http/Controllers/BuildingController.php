@@ -107,23 +107,23 @@ class BuildingController extends Controller
             if($image){
                 
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpg;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.jpg";
                 }
                 if($format == "png"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/png;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.png";
                 }
                 if($format == "jpeg"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpeg;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.jpeg";
                 }
                 
                 //$image = str_replace('data:image/png;base64,', '', $request->buildingImg);
-                $image = str_replace(' ', '+', $image);
+                 $image = str_replace(' ', '+', $image);
                 // $imageName =  $request->buildingName."_Building.png";
                 //$picture   = date('His').'-'.$filename;                
                 $path = "Customers/".$this->companyCode."/Buildings";     
@@ -219,18 +219,18 @@ class BuildingController extends Controller
             $image = $request->buildingImg;  // your base64 encoded
             if($image){
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpg;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.jpg";
                 }
                 if($format == "png"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/png;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.png";
                 }
                 if($format == "jpeg"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpeg;base64,', '', $request->buildingImg);
                     $imageName =  $request->buildingName."_Building.jpeg";
                 }
                 

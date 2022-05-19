@@ -23,6 +23,7 @@ class AlterTableAddThreeColumnsToUsersTable extends Migration
             $table->foreign('facility_id')->references('id')->on('facilities')->onDelete('cascade')->nullable();
             $table->bigInteger('building_id')->unsigned();  
             $table->foreign('building_id')->references('id')->on('buildings')->onDelete('cascade')->nullable();
+            $table->boolean('empNotification')->default('0');
                  
         });
     }

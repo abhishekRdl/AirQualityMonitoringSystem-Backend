@@ -205,12 +205,12 @@ class AuthController extends Controller
                 $logoPath = "";
 
                 if($user->user_role == "superAdmin"){
-                    $user = User::where('companyCode', $user->companyCode)->first();  
-                    $logoPath = $user->companyLogo;
+                    $users = User::where('companyCode', $user->companyCode)->first();  
+                    $logoPath = $users->companyLogo;
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
                     $logoPath = $customer->customerLogo;
-                }                
+                }               
                 
                 if($sec_level_auth == 0){
                     $user_feature = "false";
@@ -658,11 +658,10 @@ class AuthController extends Controller
     public function UserLogDetails(Request $request){
         $startDate = $request->fromDate;
         $endDate = $request->toDate;
-        // $query = UserLog::select('*');
-        // $query->where(DATE('created_at'),'>=',$startDate);
-        // $query->where(DATE('created_at'),'<=',$endDate);
+        $userId = $request->userId;
         $query = UserLog::whereBetween('created_at', [$startDate, $endDate])
-                 ->where('userEmail','=',$this->userId)->get();   
+                 ->where('companyCode','=',$this->companyCode)
+                 ->where('userId','=',$userId)->get();   
         $response = $query;
         $status = 200;
         return response($response,$status);

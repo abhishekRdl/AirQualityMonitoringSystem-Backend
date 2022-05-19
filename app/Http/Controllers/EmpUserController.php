@@ -140,6 +140,7 @@ class EmpUserController extends Controller
             $user->branch_id = $request->branch_id;
             $user->facility_id = $request->facility_id;
             $user->building_id = $request->building_id;
+            $user->empNotification = $request->empNotification; 
             
             $data = [
                 'userid'=>$user->email,
@@ -194,12 +195,17 @@ class EmpUserController extends Controller
         
         $user = User::find($id);
         if($user){
-            $user->name = $request->empname;
+            $user->name = $request->empName;
             $user->email = $request->email;
             $user->mobileno = $request->phoneNo;
             $user->employeeId = $request->empId;           
             $user->user_role = $request->empRole;
-            $user->companyCode = $this->companyCode;          
+            $user->companyCode = $this->companyCode;   
+            $user->location_id = $request->location_id;
+            $user->branch_id = $request->branch_id;
+            $user->facility_id = $request->facility_id;
+            $user->building_id = $request->building_id;
+            $user->empNotification = $request->empNotification; 
             $user->update();
             $response = [
                 "message" => "User updated successfully"

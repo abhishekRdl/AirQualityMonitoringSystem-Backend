@@ -103,18 +103,18 @@ class FloorController extends Controller
             if($image){
                 
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpg;base64,', '', $request->image);
                     $imageName =  $request->floorStage.".jpg";
                 }
                 if($format == "png"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/png;base64,', '', $request->image);
                    $imageName =  $request->floorStage.".png";
                 }
                 if($format == "jpeg"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/png;base64,', '', $request->image);
                     $imageName =  $request->floorStage.".jpeg";
                 }
                 
@@ -219,18 +219,18 @@ class FloorController extends Controller
 
             if($image){
                 
-                $format = $this->encodeImageFormat($imageLogo);
+                $format = $this->encodeImageFormat($image);
                
                 if($format == "jpg"){
-                    $image = str_replace('data:image/jpg;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpg;base64,', '', $request->floorMap);
                     $imageName =  $request->floorStage.".jpg";
                 }
                 if($format == "png"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/png;base64,', '', $request->floorMap);
                    $imageName =  $request->floorStage.".png";
                 }
                 if($format == "jpeg"){
-                    $image = str_replace('data:image/png;base64,', '', $request->customerLogo);
+                    $image = str_replace('data:image/jpeg;base64,', '', $request->floorMap);
                     $imageName =  $request->floorStage.".jpeg";
                 }
                 

@@ -142,7 +142,7 @@ class CustomerController extends Controller
             });
 
             $user = new User;
-            $user->name = "Admin";
+            $user->name = "systemSpecialist";
             $user->email = $request->email;
             $user->mobileno = $request->phoneNo;
             $user->employeeId = "00000";
