@@ -457,7 +457,7 @@ class SensorController extends Controller
             
             $sensor->warningMinValue = $request->warningMinValue;
             $sensor->warningMaxValue = $request->warningMaxValue;
-            $sensor->warningAlertType = $request->warningAlertType;
+            $sensor->warningAlertType = $request->warningAlertType; 
             $sensor->warningLowAlert = $request->warningLowAlert;
             $sensor->warningHighAlert = $request->warningHighAlert;
             

@@ -60,6 +60,8 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        
+        
         $customer = Customer::where('customerId', $request->customerId)->first();     
         
         if($customer){                             

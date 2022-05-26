@@ -199,6 +199,8 @@ Route::get('aqmi', [AqmiJsonDataController::class, 'index']);
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);     
 
 
+Route::post('sendMessage', [Authcontroller::class, 'sendMessage']);
+
 
 
 

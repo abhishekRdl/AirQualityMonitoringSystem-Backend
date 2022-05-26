@@ -120,7 +120,7 @@ class EmpUserController extends Controller
         $empuser = User::where('email', $request->email)->first();     
         if($empuser){    
             $response = [
-                "message" => "Email id  is already exist with different username"
+                "message" => "This Email ID exists under a different username"
             ];
             $status = 409;                        
         }

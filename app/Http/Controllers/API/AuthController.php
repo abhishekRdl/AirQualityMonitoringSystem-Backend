@@ -206,9 +206,11 @@ class AuthController extends Controller
 
                 if($user->user_role == "superAdmin"){
                     $users = User::where('companyCode', $user->companyCode)->first();  
+                    $companyName = $users->name;
                     $logoPath = $users->companyLogo;
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
+                    $companyName = $customer->customerName;
                     $logoPath = $customer->customerLogo;
                 }               
                 
@@ -228,6 +230,7 @@ class AuthController extends Controller
                             'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
+                            'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
                             'forcePasswordReset'=>$user->changePassword,                           
                         ],
@@ -258,6 +261,7 @@ class AuthController extends Controller
                             'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
+                            'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
                             'forcePasswordReset'=>$user->changePassword                             
                         ],
@@ -575,7 +579,7 @@ class AuthController extends Controller
         if(!Hash::check($data['oldPassword'], $user->password))
         {
             $response = [
-                "message"=>"Old password is invalid"
+                "message"=>"Old password is incorrect"
             ];
             $status = 401;
         }
@@ -744,6 +748,11 @@ class AuthController extends Controller
         {
             $query->where('location_id','=',$location_id);
         }
+        else{
+            $query->whereNull('facility_id');
+            $query->whereNull('branch_id');
+            $query->whereNull('location_id');
+        }
         
         $getData = new DataUtilityController($request,$query);
         $response =   $query->get();
@@ -751,5 +760,20 @@ class AuthController extends Controller
         
         return response($response,$status);
     }
+
+
+    public function sendMessage(Request $request){
+        $email = $request->email;
+        $data = [
+            'userid'=>$email,
+            'subject' => 'Application employee Credentials',
+            'body' =>"123456"
+        ];
+
+        Mail::send('credentialmail',$data, function($messages) use ($email){
+            $messages->to($email);
+            $messages->subject('Application login credentials');        
+        });
+    } 
 
 }
