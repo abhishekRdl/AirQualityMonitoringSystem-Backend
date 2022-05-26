@@ -24,7 +24,8 @@ use App\Http\Controllers\ConfigSetupController;
 use App\Http\Controllers\DeviceConfigSetupController;
 use App\Http\Controllers\AqmiJsonDataController;
 use App\Http\Controllers\AqiChartConfigValuesController;
-
+use App\Http\Controllers\BumpTestResultController;
+use App\Http\Controllers\CalibrationTestResultController;
 
 
 /*
@@ -153,6 +154,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('sensor/add',[SensorController::class,'store']);
     Route::post('sensor/{id}/update',[SensorController::class,'update']);
     Route::delete('sensor/{id}/delete',[SensorController::class,'destroy']);
+    Route::get('deviceDeployedSensors/{id}', [SensorController::class, 'deviceDeployedSensors']); 
+    Route::get('sensorTag', [SensorController::class, 'getSensorTagData']);
+    Route::post('sensorProperties/{id}/update', [SensorController::class, 'sensorPropertiesUpdate']);
     
     //sensorUnit
     Route::get('sensorUnit/{id}', [SensorUnitController::class, 'index']);
@@ -173,31 +177,62 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
 
+    Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+    Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+
+    Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
+    Route::post('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
+    
+    Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);
+
+    Route::post('userListDetails', [AuthController::class, 'userListDetails']);  
+
+    Route::post('userLog', [AuthController::class, 'UserLogDetails']);
+
 });
 
-Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 
+Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
-
-
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);     
+
+
+Route::post('sendMessage', [Authcontroller::class, 'sendMessage']);
+
+
+
+
+
+
+
+
+//local
+// {
+//     "email":"developer2@rdltech.in",
+//     "password":"WgePhnShen"
+// }
+
+//server
+// {
+//     "email":"developer2@rdltech.in",
+//     "password":"123456"
+// }
+
+//git remote add upstream  git@github.com:teamlead-rdl/AirQualityMonitoringSystem.git
+//git remote
+//git pull
+//git pull upstream develop
+//git branch
+
+
+
+
+
+
+
+
 
 
   

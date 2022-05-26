@@ -41,8 +41,9 @@ class CreateDevicesTable extends Migration
             $table->text('dataPushUrl')->nullable();
             $table->text('firmwarePushUrl')->nullable();            
             $table->text('deviceMode')->nullable();           
-            $table->boolean('firmwareStatus')->default('0')->after('deviceMode');     
-            $table->boolean('configurationStatus')->default('0')->after('firmwareStatus');     
+            $table->boolean('firmwareStatus')->default('0');     
+            $table->boolean('configurationStatus')->default('0');                
+            $table->text('xAxisTimeInterval')->nullable();            
             $table->timestamps();
         });
     }

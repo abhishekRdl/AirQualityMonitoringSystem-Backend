@@ -4,6 +4,7 @@ namespace App\Http\Controllers\UTILITY;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DataUtilityController extends Controller
 {
@@ -24,8 +25,8 @@ class DataUtilityController extends Controller
         if($query) {
             
             $this->perPage = $request->input(key:'perPageData') == "" ? $this->perPage : $request->input(key:'perPageData');
-            $this->sort = $request->input(key:'sort') == "" ? "ASC" : $request->input(key:'sort');
-            $this->column = $request->input(key:'column') == "" ? "id" : $request->input(key:'sort');           
+            $this->sort = $request->input(key:'sort') == "" ? "DESC" : $request->input(key:'sort');
+            $this->column = $request->input(key:'column') == "" ? "id" : $request->input(key:'column');           
             
             $query->orderBy($this->column,$this->sort);        
             

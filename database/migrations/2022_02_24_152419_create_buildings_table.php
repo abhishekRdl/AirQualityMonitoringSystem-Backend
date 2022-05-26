@@ -22,7 +22,7 @@ class CreateBuildingsTable extends Migration
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');   
             $table->bigInteger('facility_id')->unsigned();  
             $table->foreign('facility_id')->references('id')->on('facilities')->onDelete('cascade');          
-            $table->text('buildingName')->unique();
+            $table->text('buildingName')->nullable();
             $table->text('coordinates');
             $table->text('buildingTotalFloors');
             $table->text('buildingDescription');

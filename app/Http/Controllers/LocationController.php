@@ -188,7 +188,7 @@ class LocationController extends Controller
                 $location->coordinates = $request->coordinates;                
                 $location->update();
                 $response = [
-                    "message" => "Location name updated successfully"
+                    "message" => "Location details is updated"
                 ];
                 $status = 200;  
             }catch (QueryException $e) {
