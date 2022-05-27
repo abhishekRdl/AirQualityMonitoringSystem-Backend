@@ -42,77 +42,7 @@ class DataController extends Controller{
             // $this->table  = "Sensors";
             
             
-            $query = Sensor::select(
-                            // 'id',
-                            // 'companyCode',
-                            // 'location_id',
-                            // 'branch_id',   
-                            // 'facility_id', 
-                            // 'building_id',
-                            // 'floor_id',
-                            // 'lab_id',
-                            
-                            // 'categoryId',//1
-                            // 'deviceCategory',//AQMI
-                            
-                            // 'sensorCategoryId',//1
-                            // 'sensorCategoryName',//Temperature
-                            
-                            // 'deviceId',//34
-                            // 'deviceName',//AQMI-007
-                    
-                            // 'sensorName',//2
-                            // 'sensorNameUnit',//h20
-                            
-                            // 'conversionType',
-                            
-                            // 'sensorOutput',
-                            // 'sensorType',
-                            // 'sensorTag',
-                            
-                            // 'registerId',
-                            // 'registerType',
-                            // 'slaveId',
-                            
-                            // 'subnetMask',
-                            // 'units',
-                            // 'ipAddress',
-                            // 'length',
-                    
-                            // 'maxRatedReading',
-                            // 'maxRatedReadingChecked',
-                            // 'maxRatedReadingScale',
-                            // 'minRatedReading',
-                            // 'minRatedReadingChecked',
-                            // 'minRatedReadingScale',
-                            
-                            // 'pollingIntervalType',
-                            
-                            // 'criticalMinValue',
-                            // 'criticalMaxValue',
-                            // 'criticalAlertType',
-                            // 'criticalLowAlert',
-                            // 'criticalHighAlert',
-                            
-                            // 'warningMinValue',
-                            // 'warningMaxValue',
-                            // 'warningAlertType',
-                            // 'warningLowAlert',
-                            // 'warningHighAlert',
-                            
-                            // 'outofrangeMinValue',
-                            // 'outofrangeMaxValue',
-                            // 'outofrangeAlertType',
-                            // 'outofrangeLowAlert',
-                            // 'outofrangeHighAlert',
-                            
-                            // 'digitalAlertType',
-                            // 'digitalLowAlert',
-                            // 'digitalHighAlert',
-                            
-                            '*'
-                            
-                        
+            $query = Sensor::select( '*'              
                         );
                     $query->where('companyCode','=',$this->companyCode);
                     $query->where('location_id','=',$request->location_id);
@@ -129,77 +59,8 @@ class DataController extends Controller{
                     $total = $query->count();
                     $result = $query->offset(value:($page - 1) * $perPage)->limit($perPage)->get();
                                       
-                    $query1 = Sensor::select(
-                            // 'id',
-                            // 'companyCode',
-                            // 'location_id',
-                            // 'branch_id',   
-                            // 'facility_id', 
-                            // 'building_id',
-                            // 'floor_id',
-                            // 'lab_id',
-                            
-                            // 'categoryId',//1
-                            // 'deviceCategory',//AQMI
-                            
-                            // 'sensorCategoryId',//1
-                            // 'sensorCategoryName',//Temperature
-                            
-                            // 'deviceId',//34
-                            // 'deviceName',//AQMI-007
-                    
-                            // 'sensorName',//2
-                            // 'sensorNameUnit',//h20
-                            
-                            // 'conversionType',
-                            
-                            // 'sensorOutput',
-                            // 'sensorType',
-                            // 'sensorTag',
-                            
-                            // 'registerId',
-                            // 'registerType',
-                            // 'slaveId',
-                            
-                            // 'subnetMask',
-                            // 'units',
-                            // 'ipAddress',
-                            // 'length',
-                    
-                            // 'maxRatedReading',
-                            // 'maxRatedReadingChecked',
-                            // 'maxRatedReadingScale',
-                            // 'minRatedReading',
-                            // 'minRatedReadingChecked',
-                            // 'minRatedReadingScale',
-                            
-                            // 'pollingIntervalType',
-                            
-                            // 'criticalMinValue',
-                            // 'criticalMaxValue',
-                            // 'criticalAlertType',
-                            // 'criticalLowAlert',
-                            // 'criticalHighAlert',
-                            
-                            // 'warningMinValue',
-                            // 'warningMaxValue',
-                            // 'warningAlertType',
-                            // 'warningLowAlert',
-                            // 'warningHighAlert',
-                            
-                            // 'outofrangeMinValue',
-                            // 'outofrangeMaxValue',
-                            // 'outofrangeAlertType',
-                            // 'outofrangeLowAlert',
-                            // 'outofrangeHighAlert',
-                            
-                            // 'digitalAlertType',
-                            // 'digitalLowAlert',
-                            // 'digitalHighAlert',
-                            
-                            '*'
-                            
-                        
+                    $query1 = Sensor::select(                           
+                            '*'                      
                         );
                     $query1->where('companyCode','=',$this->companyCode);
                     $query1->where('location_id','=',$request->location_id);
@@ -216,74 +77,7 @@ class DataController extends Controller{
                     $total1 = $query1->count();
                     $result1 = $query1->offset(value:($page - 1) * $perPage)->limit($perPage)->get();
                     
-                    $query2 = Sensor::select(
-                            // 'id',
-                            // 'companyCode',
-                            // 'location_id',
-                            // 'branch_id',   
-                            // 'facility_id', 
-                            // 'building_id',
-                            // 'floor_id',
-                            // 'lab_id',
-                            
-                            // 'categoryId',//1
-                            // 'deviceCategory',//AQMI
-                            
-                            // 'sensorCategoryId',//1
-                            // 'sensorCategoryName',//Temperature
-                            
-                            // 'deviceId',//34
-                            // 'deviceName',//AQMI-007
-                    
-                            // 'sensorName',//2
-                            // 'sensorNameUnit',//h20
-                            
-                            // 'conversionType',
-                            
-                            // 'sensorOutput',
-                            // 'sensorType',
-                            // 'sensorTag',
-                            
-                            // 'registerId',
-                            // 'registerType',
-                            // 'slaveId',
-                            
-                            // 'subnetMask',
-                            // 'units',
-                            // 'ipAddress',
-                            // 'length',
-                    
-                            // 'maxRatedReading',
-                            // 'maxRatedReadingChecked',
-                            // 'maxRatedReadingScale',
-                            // 'minRatedReading',
-                            // 'minRatedReadingChecked',
-                            // 'minRatedReadingScale',
-                            
-                            // 'pollingIntervalType',
-                            
-                            // 'criticalMinValue',
-                            // 'criticalMaxValue',
-                            // 'criticalAlertType',
-                            // 'criticalLowAlert',
-                            // 'criticalHighAlert',
-                            
-                            // 'warningMinValue',
-                            // 'warningMaxValue',
-                            // 'warningAlertType',
-                            // 'warningLowAlert',
-                            // 'warningHighAlert',
-                            
-                            
-                            // 'outofrangeMinValue',
-                            // 'outofrangeMaxValue',
-                            // 'outofrangeAlertType',
-                            // 'outofrangeLowAlert',
-                            // 'outofrangeHighAlert',
-                            
-                            // 'digitalAlertType',
-                            // 'digitalLowAlert',
-                            // 'digitalHighAlert',
+                    $query2 = Sensor::select(                            
                             '*'
                         );
                     $query2->where('companyCode','=',$this->companyCode);
@@ -340,7 +134,7 @@ class DataController extends Controller{
             $query->where('building_id','=',$request->building_id); 
             $query->where('floor_id','=',$request->floor_id); 
             $query->where('lab_id','=',$request->lab_id); 
-            $query->where('category_id','=',$request->category_id); 
+            $query->where('category_id','=',$request->sensorCategoryId); 
             $this->table  = "categoryDevices";   
     
         }else if($request->location_id != "" && $request->branch_id != "" && $request->facility_id != ""  && $request->building_id !="" && $request->floor_id !="" && $request->lab_id !=""){
