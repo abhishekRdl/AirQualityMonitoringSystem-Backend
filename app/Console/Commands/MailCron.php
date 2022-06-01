@@ -41,7 +41,7 @@ class MailCron extends Command
     public function handle()
     {
         //return 0;
-        $email = "prjwaldk011@gmail.com";
+        $email = "abhishek@rdltech.in";
         $data = [
             'userid'=>$email,
             'subject' => 'Application employee Credentials',
