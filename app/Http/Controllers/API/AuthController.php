@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserLog;
 use App\Models\Customer;
 use RateLimiter;
 use Illuminate\Support\Facades\Hash;
@@ -204,12 +205,14 @@ class AuthController extends Controller
                 $logoPath = "";
 
                 if($user->user_role == "superAdmin"){
-                    $user = User::where('companyCode', $user->companyCode)->first();  
-                    $logoPath = $user->companyLogo;
+                    $users = User::where('companyCode', $user->companyCode)->first();  
+                    $companyName = $users->name;
+                    $logoPath = $users->companyLogo;
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
+                    $companyName = $customer->customerName;
                     $logoPath = $customer->customerLogo;
-                }                
+                }               
                 
                 if($sec_level_auth == 0){
                     $user_feature = "false";
@@ -227,6 +230,7 @@ class AuthController extends Controller
                             'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
+                            'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
                             'forcePasswordReset'=>$user->changePassword,                           
                         ],
@@ -257,6 +261,7 @@ class AuthController extends Controller
                             'userName'=>$user->name,
                             'userRole'=>$user->user_role,
                             'companyCode'=>$user->companyCode,
+                            'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
                             'forcePasswordReset'=>$user->changePassword                             
                         ],
@@ -574,7 +579,7 @@ class AuthController extends Controller
         if(!Hash::check($data['oldPassword'], $user->password))
         {
             $response = [
-                "message"=>"Old password is invalid"
+                "message"=>"Old password is incorrect"
             ];
             $status = 401;
         }
@@ -651,6 +656,135 @@ class AuthController extends Controller
         ];
         $status = 200;
         return response($response,$status);
+    } 
+
+
+    public function UserLogDetails(Request $request){
+        $startDate = $request->fromDate;
+        $endDate = $request->toDate;
+        $userId = $request->userId;
+        
+        $query = UserLog::select('*')
+                    ->where('companyCode','=',$this->companyCode)
+                    ->where('userId','=',$userId);
+        if($startDate === $endDate){
+            $query->whereDate('created_at','=',$startDate); 
+        }
+        else{
+            $query->whereBetween('created_at', [$startDate, $endDate]);    
+        }
+        
+        $response = $query->get();
+        $status = 200;
+        return response($response,$status);
+    }
+
+
+    
+
+    public function userListDetails(Request $request)
+    {
+        $query = User::select('name');
+        
+        $location_id = $request->location_id;
+        $branch_id = $request->branch_id;
+        $facility_id = $request->facility_id;
+
+
+        $userRole = "";
+        $userId = "";
+        $companyCode = "";
+
+        if($request->hasHeader('companyCode')) {
+            $companyCode = $request->Header('companyCode');
+        }
+
+        if($request->hasHeader('userId')){
+            $userId = $request->Header('userId');
+        }
+
+        if($request->hasHeader('userRole')){
+            $userRole = $request->Header('userRole');
+        }
+
+        if($companyCode!="" || $userRole!= "" || $userId != ""){
+            if($userRole == "superAdmin"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('employeeId','<>','0000');             
+            }
+            elseif($userRole == "systemSpecialist"){
+                $query->where('companyCode','=',$companyCode)
+                   // ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');           
+            }
+            
+            elseif($userRole == "Admin"){
+                $query->where('companyCode','=',$companyCode)
+                   // ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');              
+            }
+            elseif($userRole == "Manager"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');            
+            }
+           elseif($userRole == "User"){
+                $query->where('companyCode','=',$companyCode)
+                    ->where('user_role','<>','Manager')
+                    ->where('user_role','<>','Admin')
+                    ->where('user_role','<>','systemSpecialist')
+                    ->where('user_role','<>','superAdmin');            
+            }
+
+            //SELECT * FROM `sampled_sensor_data_details` where DATE(sample_date_time)='2022-05-10' and HOUR(TIME(sample_date_time))='17' AND parameterName='NH3'
+        }
+        
+        if($location_id != "" && $branch_id != "" && $facility_id != "")
+        {
+            $query->where('facility_id','=',$facility_id);
+            $query->where('branch_id','=',$branch_id);
+            $query->where('location_id','=',$location_id);
+        }
+        
+        if($location_id != "" && $branch_id != "")
+        {
+            $query->where('branch_id','=',$branch_id);
+            $query->where('location_id','=',$location_id);
+        }
+        
+        if($location_id != "")
+        {
+            $query->where('location_id','=',$location_id);
+        }
+        else{
+            $query->whereNull('facility_id');
+            $query->whereNull('branch_id');
+            $query->whereNull('location_id');
+        }
+        
+        $getData = new DataUtilityController($request,$query);
+        $response =   $query->get();
+        $status = 200;
+        
+        return response($response,$status);
+    }
+
+
+    public function sendMessage(Request $request){
+        $email = $request->email;
+        $data = [
+            'userid'=>$email,
+            'subject' => 'Application employee Credentials',
+            'body' =>"123456"
+        ];
+
+        Mail::send('credentialmail',$data, function($messages) use ($email){
+            $messages->to($email);
+            $messages->subject('Application login credentials');        
+        });
     } 
 
 }

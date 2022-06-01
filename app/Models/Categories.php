@@ -15,3 +15,5 @@ class Categories extends Model
         'categoryDescription'
     ];
 }
+
+

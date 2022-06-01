@@ -31,6 +31,8 @@ class Device extends Model
         'deviceMode',
 
         'firmwareStatus',
-        'configurationStatus'
+        'configurationStatus',        
+        
+        'xAxisTimeInterval'
     ];
 }

@@ -79,6 +79,21 @@ class Sensor extends Model
         'digitalLowAlert',
         'digitalHighAlert',
 
+
+        'isStel',
+        'stelDuration',
+        'stelType',
+        'stelLimit',
+        'stelAlert',
+        
+        'twaDuration',
+        'twaType',
+        'twaLimit',
+        'twaAlert',
+
+        'alarm',
+        'unLatchDuration',
+
         'isAQI',
         'parmGoodMinScale',
         'parmGoodMaxScale',
@@ -97,7 +112,12 @@ class Sensor extends Model
 
         'parmSevereMinScale',
         'parmSevereMaxScale',  
-        
+
+        'relayOutput',
+        'sensorFault',       
+
+        'sensorStatus',
+        'notificationStatus'    
 
         
 

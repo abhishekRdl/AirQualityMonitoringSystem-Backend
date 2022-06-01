@@ -20,7 +20,7 @@ class CreateFacilitiesTable extends Migration
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');   
             $table->bigInteger('branch_id')->unsigned();  
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');        
-            $table->string('facilityName')->unique();           
+            $table->string('facilityName')->nullable();           
             $table->text('coordinates');
             $table->timestamps();
         });

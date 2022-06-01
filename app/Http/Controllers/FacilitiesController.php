@@ -156,8 +156,7 @@ class FacilitiesController extends Controller
 
             if($facilityDataFound){
                 throw new CustomException("Duplicate Entry found");
-            }
-        
+            }                   
         
         
             $Facilities->companyCode = $this->companyCode;

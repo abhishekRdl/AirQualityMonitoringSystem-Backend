@@ -60,6 +60,8 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        
+        
         $customer = Customer::where('customerId', $request->customerId)->first();     
         
         if($customer){                             
@@ -142,7 +144,7 @@ class CustomerController extends Controller
             });
 
             $user = new User;
-            $user->name = "Admin";
+            $user->name = "systemSpecialist";
             $user->email = $request->email;
             $user->mobileno = $request->phoneNo;
             $user->employeeId = "00000";

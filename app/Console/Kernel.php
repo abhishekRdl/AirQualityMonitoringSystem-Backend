@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\commands\MailCron;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,9 +14,14 @@ class Kernel extends ConsoleKernel
      * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
      * @return void
      */
+
+    protected $command = [
+        Commands\MailCron::class
+    ];
+
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('mail:cron')->everyMinute();
     }
 
     /**
@@ -30,3 +36,6 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
     }
 }
+
+
+#2022-05-30T15:59:44+05:30] Running scheduled command: "D:\xampp\php\php.exe" "artisan" demo:cron > "NUL" 2>&1

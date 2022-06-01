@@ -13,10 +13,9 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = Role::query();
-        
+        $query = Role::query();        
         
         $getData = new DataUtilityController($request,$query);
         $response = $getData->getData();

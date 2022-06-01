@@ -18,7 +18,7 @@ class AqmiJsonDataController extends Controller
         $query = AqmiJsonData::select('j_data');    
         $this->searchedKey = $request->searchKey == "" ? "" : $request->searchKey;            
   
-        
+         
         if($this->searchedKey != ""){            
             $query->whereRaw(sql:"j_data LIKE '%". $this->searchedKey['BULDING'] ."%'");
             $query->whereRaw(sql:"j_data LIKE '%". $this->searchedKey['FLOOR'] ."%'");
