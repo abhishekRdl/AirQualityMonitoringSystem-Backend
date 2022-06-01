@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SampledSensorDataDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class SampledSensorDataDetailsController extends Controller
 {
@@ -66,7 +67,6 @@ class SampledSensorDataDetailsController extends Controller
                 ->orderBy('id','desc')
                 ->get()->toArray();
                 $sensorData["id"] =$sensorTagNames[$x];  
-                
                 foreach($sensorValues as $sensor){
                   	$sensorData["data"][] = [ 
           	            "y"=>$sensor->last_val,
@@ -243,7 +243,6 @@ class SampledSensorDataDetailsController extends Controller
                         ->get()->toArray();
                         
         $sensorData["id"] = $sensorTag;
-        
         $sensorData["min"] = $minVal;
         $sensorData["max"] = $maxVal;
         $sensorData["avg"] = $avgVal;
@@ -254,10 +253,9 @@ class SampledSensorDataDetailsController extends Controller
           	];
         }                
                         
-        $response = [
-              "data"=>$sensorData,
-              "status"=>200
-        ];
+        $response = $sensorData;
+           
+       
         
         return response($response,200);
     }

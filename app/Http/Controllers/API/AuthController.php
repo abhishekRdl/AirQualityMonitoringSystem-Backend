@@ -658,6 +658,11 @@ class AuthController extends Controller
         return response($response,$status);
     } 
 
+    public function tokenDetails(){
+        $userEmail = Auth::user()->email;
+        return response(200);
+
+    }
 
     public function UserLogDetails(Request $request){
         $startDate = $request->fromDate;

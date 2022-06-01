@@ -26,6 +26,7 @@ use App\Http\Controllers\AqmiJsonDataController;
 use App\Http\Controllers\AqiChartConfigValuesController;
 use App\Http\Controllers\BumpTestResultController;
 use App\Http\Controllers\CalibrationTestResultController;
+use App\Http\Controllers\SampledSensorDataDetailsController;
 
 
 /*
@@ -185,21 +186,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);
 
-    Route::post('userListDetails', [AuthController::class, 'userListDetails']);  
+    Route::post('userListDetails', [AuthController::class, 'userListDetails']);      
+
+    Route::post('sendMessage', [Authcontroller::class, 'sendMessage']);
 
     Route::post('userLog', [AuthController::class, 'UserLogDetails']);
+
+    Route::post('tokenDetails', [AuthController::class, 'tokenDetails']);
+
+
 
 });
 
 
-Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
+Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);   
+Route::post('aqmiSensorValues', [SampledSensorDataDetailsController::class, 'show']);
+Route::post('aqmiDeviceSensorValues', [SampledSensorDataDetailsController::class, 'deviceSensorShow']);
+Route::post('lastSampledValues', [SampledSensorDataDetailsController::class, 'lastSampledData']);
+Route::post('sensorTagIdData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagId']);
+
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
+
+Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);     
 
 
-Route::post('sendMessage', [Authcontroller::class, 'sendMessage']);
+
 
 
 
