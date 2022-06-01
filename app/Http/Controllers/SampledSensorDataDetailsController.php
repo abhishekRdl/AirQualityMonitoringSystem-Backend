@@ -66,6 +66,7 @@ class SampledSensorDataDetailsController extends Controller
                 ->orderBy('id','desc')
                 ->get()->toArray();
                 $sensorData["id"] =$sensorTagNames[$x];  
+                
                 foreach($sensorValues as $sensor){
                   	$sensorData["data"][] = [ 
           	            "y"=>$sensor->last_val,
@@ -242,6 +243,7 @@ class SampledSensorDataDetailsController extends Controller
                         ->get()->toArray();
                         
         $sensorData["id"] = $sensorTag;
+        
         $sensorData["min"] = $minVal;
         $sensorData["max"] = $maxVal;
         $sensorData["avg"] = $avgVal;
