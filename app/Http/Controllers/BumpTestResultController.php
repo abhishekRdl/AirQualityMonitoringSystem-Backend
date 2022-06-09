@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\BumpTestResult;
 use Illuminate\Http\Request;
 use App\Http\Controllers\UtilityController;
+use App\Models\Sensor;
+use Illuminate\Support\Facades\Mail;
 
 class BumpTestResultController extends Controller
 {
@@ -33,6 +35,7 @@ class BumpTestResultController extends Controller
              $nextDueDate = DB::table('bump_test_results')
                             ->select('nextDueDate')
                             ->where('sensorTagName','=',$request->sensorTagName)
+                            ->where('companyCode','=',$this->companyCode)
                             ->orderBy('id', 'DESC')->first();
             $date = "";
             if($nextDueDate){
@@ -41,7 +44,8 @@ class BumpTestResultController extends Controller
            
             $query = DB::table('bump_test_results')
             ->select('*')
-            ->where('sensorTagName','=',$request->sensorTagName);            
+            ->where('sensorTagName','=',$request->sensorTagName)
+            ->where('companyCode','=',$this->companyCode);            
             
             $getData = new DataUtilityController($request,$query);
             
@@ -77,8 +81,69 @@ class BumpTestResultController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-     public function store(Request $request)
+    public function store(Request $request)
     {
+        $query = DB::table('customers as c')
+                ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
+                ->Join('branches as b', function($join){
+                    $join->on('l.id', '=', 'b.location_id')
+                         ->on('c.customerId', '=', 'b.companyCode');
+                })
+                ->Join('facilities as f', function($join){
+                    $join->on('c.customerId', '=', 'f.companyCode')
+                        ->on('l.id', '=', 'f.location_id')
+                        ->on('b.id', '=', 'f.branch_id');
+                })
+                ->Join('buildings as bl', function($join){
+                    $join->on('c.customerId', '=', 'bl.companyCode')
+                        ->on('l.id', '=', 'bl.location_id')
+                        ->on('b.id', '=', 'bl.branch_id')
+                        ->on('f.id','=','bl.facility_id');
+                })
+                ->Join('floors as fl', function($join){
+                    $join->on('c.customerId', '=', 'fl.companyCode')
+                        ->on('l.id', '=', 'fl.location_id')
+                        ->on('b.id', '=', 'fl.branch_id')
+                        ->on('f.id','=','fl.facility_id')
+                        ->on('bl.id','=','fl.building_id');
+                })
+                ->Join('lab_departments as lb', function($join){
+                    $join->on('c.customerId', '=', 'lb.companyCode')
+                        ->on('l.id', '=', 'lb.location_id')
+                        ->on('b.id', '=', 'lb.branch_id')
+                        ->on('f.id','=','lb.facility_id')
+                        ->on('bl.id','=','lb.building_id')
+                        ->on('fl.id','=','lb.floor_id');
+                })
+                ->Join('devices as d', function($join){
+                    $join->on('c.customerId', '=', 'd.companyCode')
+                        ->on('l.id', '=', 'd.location_id')
+                        ->on('b.id', '=', 'd.branch_id')
+                        ->on('f.id','=','d.facility_id')
+                        ->on('bl.id','=','d.building_id')
+                        ->on('fl.id','=','d.floor_id')
+                        ->on('lb.id','=','d.lab_id');
+                })
+                ->Join('sensors as s', function($join){
+                    $join->on('c.customerId', '=', 'd.companyCode')
+                        ->on('l.id', '=', 's.location_id')
+                        ->on('b.id', '=', 's.branch_id')
+                        ->on('f.id','=','s.facility_id')
+                        ->on('bl.id','=','s.building_id')
+                        ->on('fl.id','=','s.floor_id')
+                        ->on('lb.id','=','s.lab_id')
+                        ->on('d.id','=','s.deviceid');
+                })
+                ->select('c.customerId', 'l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.deviceName','s.sensorNameUnit','s.sensorTag')
+                ->WHERE('customerId','=','A-TEST')
+                ->WHERE('sensorTag','=',$request->sensorTagName)
+                ->first();
+                
+                
+        $userNotificationEnabledData = DB::table('users')
+                ->where('empNotification','=','1')
+                ->get();
+                
         $current_time = date('Y-m-d H:i:s');         
         $bumptestresult = new BumpTestResult;
         $bumptestresult->companyCode = $this->companyCode;
@@ -93,29 +158,27 @@ class BumpTestResultController extends Controller
         $bumptestresult->nextDueDate = $request->nextDueDate;
         if($request->percentageDeviation >= 0 && $request->percentageDeviation <= 10){
             $bumptestresult->result = "Pass";
-
+            
+            foreach($userNotificationEnabledData as $user){
+                $this->sendBumpTestDueDateMailToUsers($query, $user->email, $bumptestresult->result);
+            }
+            
         }
         else{
-            $bumptestresult->result = "Fail";    
-
-            // $data = [
-            //     'userid'=>$user->name,
-            //     'subject' => 'Application OTP',
-            //     'body' => 'Your OTP is : '. $otp
-            // ];
-        
-            // Mail::send('mail',$data, function($messages) use ($user){
-            //     $messages->to($user->email);
-            //     $messages->subject('OTP verification');        
-            // });  
-
+            $bumptestresult->result = "Fail";
+            
+            foreach($userNotificationEnabledData as $user){
+                $this->sendBumpTestDueDateMailToUsers($query, $user->email, $bumptestresult->result);
+            }            
         }
-             
         $bumptestresult->save();
         $response = [
-            "message" => "BumpTest Result added successfully"
+            "message" => "Bump test Result added successfully"
+            
+            
         ];
-        $status = 201;       
+        $status = 201;  
+        
         return response($response,$status);
     }
 
@@ -163,16 +226,127 @@ class BumpTestResultController extends Controller
     {
         //
     }
-
-
+    
+    
+    public function sendBumpTestDueDateMailToUsers($query, $userEmail, $result)
+    {   
+          $data = [
+                    'userid'=>$userEmail,
+                    'subject' => 'BumpTest Result Information',
+                    'customerName'=>$query->customerId,
+                    'stateName'=>$query->stateName,
+                    'branchName'=>$query->branchName,
+                    'facilityName'=>$query->facilityName,
+                    'buildingName'=>$query->buildingName,
+                    'floorName'=>$query->floorName,
+                    'labDepName'=>$query->labDepName,
+                    'deviceName'=>$query->deviceName,
+                    'sensorNameUnit'=>$query->sensorNameUnit,
+                    'sensorTagName'=>$query->sensorTag,
+                    'Result'=>$result
+                ];
+        
+        Mail::send('bumpTestMail',$data, function($messages) use ($userEmail){
+            $messages->to($userEmail);
+            $messages->subject('BumpTest Result Information');        
+        });
+    }
+    
     public function sql(){
-        $sensorValues = DB::table('sampled_sensor_data_details')
-        ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-        ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.sample_date_time)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-        ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
-        ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagIds[$x]->id)
-        ->groupBy('timekey')
-        ->get()->toArray();
+        
+        $sensorTagName = 'pm2.5_gas1';       
+        
+        //sample join query
+        $query = DB::table('customers as c')
+                ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
+                ->Join('branches as b', function($join){
+                    $join->on('l.id', '=', 'b.location_id')
+                         ->on('c.customerId', '=', 'b.companyCode');
+                })
+                ->Join('facilities as f', function($join){
+                    $join->on('c.customerId', '=', 'f.companyCode')
+                        ->on('l.id', '=', 'f.location_id')
+                        ->on('b.id', '=', 'f.branch_id');
+                })
+                ->Join('buildings as bl', function($join){
+                    $join->on('c.customerId', '=', 'bl.companyCode')
+                        ->on('l.id', '=', 'bl.location_id')
+                        ->on('b.id', '=', 'bl.branch_id')
+                        ->on('f.id','=','bl.facility_id');
+                })
+                ->Join('floors as fl', function($join){
+                    $join->on('c.customerId', '=', 'fl.companyCode')
+                        ->on('l.id', '=', 'fl.location_id')
+                        ->on('b.id', '=', 'fl.branch_id')
+                        ->on('f.id','=','fl.facility_id')
+                        ->on('bl.id','=','fl.building_id');
+                })
+                ->Join('lab_departments as lb', function($join){
+                    $join->on('c.customerId', '=', 'lb.companyCode')
+                        ->on('l.id', '=', 'lb.location_id')
+                        ->on('b.id', '=', 'lb.branch_id')
+                        ->on('f.id','=','lb.facility_id')
+                        ->on('bl.id','=','lb.building_id')
+                        ->on('fl.id','=','lb.floor_id');
+                })
+                ->Join('devices as d', function($join){
+                    $join->on('c.customerId', '=', 'd.companyCode')
+                        ->on('l.id', '=', 'd.location_id')
+                        ->on('b.id', '=', 'd.branch_id')
+                        ->on('f.id','=','d.facility_id')
+                        ->on('bl.id','=','d.building_id')
+                        ->on('fl.id','=','d.floor_id')
+                        ->on('lb.id','=','d.lab_id');
+                })
+                ->Join('sensors as s', function($join){
+                    $join->on('c.customerId', '=', 'd.companyCode')
+                        ->on('l.id', '=', 's.location_id')
+                        ->on('b.id', '=', 's.branch_id')
+                        ->on('f.id','=','s.facility_id')
+                        ->on('bl.id','=','s.building_id')
+                        ->on('fl.id','=','s.floor_id')
+                        ->on('lb.id','=','s.lab_id')
+                        ->on('d.id','=','s.deviceid');
+                })
+                ->select('c.customerId', 'l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.deviceName','s.sensorNameUnit','s.sensorTag')
+                ->WHERE('customerId','=','A-TEST')
+                ->WHERE('sensorTag','=',$sensorTagName)
+                ->first();
+                
+                
+                //sample mail with multiple content in data
+                // $email = "abhishek@rdltech.in";
+                // $data = [
+                //     'userid'=>$email,
+                //     'subject' => 'Application employee Credentials',
+                //     'body' =>"123456",
+                //     "content"=>"hello"
+                // ];
+        
+                // Mail::send('credentialmail',$data, function($messages) use ($email){
+                //     $messages->to($email);
+                //     $messages->subject('Application login credentials');        
+                // });
+                
+                
+                
+                $userNotificationEnabledData = DB::table('users')
+                        ->where('empNotification','=','1')
+                        ->get();
+                        
+                $userNames = array();
+                foreach($userNotificationEnabledData as $user){
+                    $this->sendBumpTestDueDateMailToUsers($query, $user->email);
+                   
+                }
+                
+                $response = [
+                    "data"=>$userNames
+                ];
+                
+        return response($response,200);
+       
+        
     }
 }
 
@@ -190,17 +364,3 @@ class BumpTestResultController extends Controller
 //     "nextDueDate":"26-08-2022",
 //     "result":"fail"
 // }
-
-
-
-//bumptest query
-// SELECT customers.customerId, locations.stateName, branches.branchName, facilities.facilityName, buildings.buildingName, floors.floorName, lab_departments.labDepName, devices.deviceName, sensors.sensorNameUnit FROM customers 
-// INNER JOIN locations ON customers.customerId = locations.companyCode 
-// INNER JOIN branches ON customers.customerId = branches.companyCode AND locations.id = branches.location_id 
-// INNER JOIN facilities ON customers.customerId = facilities.companyCode AND locations.id = facilities.location_id AND branches.id = facilities.branch_id 
-// INNER JOIN buildings ON customers.customerId = buildings.companyCode AND  locations.id = buildings.location_id  AND branches.id = buildings.branch_id AND facilities.id = buildings.facility_id
-// INNER JOIN floors ON customers.customerId = floors.companyCode AND  locations.id = floors.location_id  AND  branches.id = floors.branch_id AND  facilities.id = floors.facility_id AND buildings.id = floors.building_id
-// INNER JOIN lab_departments ON customers.customerId = lab_departments.companyCode AND  locations.id = lab_departments.location_id  AND  branches.id = lab_departments.branch_id AND  facilities.id = lab_departments.facility_id AND buildings.id = lab_departments.building_id AND floors.id = lab_departments.floor_id 
-// INNER JOIN devices ON customers.customerId = devices.companyCode AND  locations.id = devices.location_id  AND  branches.id = devices.branch_id AND  facilities.id = devices.facility_id AND buildings.id = devices.building_id AND floors.id = devices.floor_id AND lab_departments.id = devices.lab_id
-// INNER JOIN sensors ON customers.customerId = sensors.companyCode AND  locations.id = sensors.location_id  AND  branches.id = sensors.branch_id AND  facilities.id = sensors.facility_id AND buildings.id = sensors.building_id AND floors.id = sensors.floor_id AND lab_departments.id = sensors.lab_id AND devices.id = sensors.deviceid
-// where customers.customerId = "A-TEST" AND sensors.sensorTag = "NH3_gas1"

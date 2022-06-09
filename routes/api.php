@@ -40,12 +40,8 @@ use App\Http\Controllers\SampledSensorDataDetailsController;
 |
 */
 
-Route::group(['middleware' => ['web']], function () {
-    
+Route::group(['middleware' => ['web']], function () {    
 });
-
-#php artisan make:model Facilities -c -m -r
-
 
 Route::post('register', [AuthController::class,'register']);
 Route::post('login', [AuthController::class, 'login']);

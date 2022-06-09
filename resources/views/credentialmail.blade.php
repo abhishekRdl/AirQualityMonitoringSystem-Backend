@@ -1,8 +1,8 @@
 <tr>  
-    <td>Username:{{$userid}}</td>   
+    <td>Username:  {{$userid}}</td>   
 </tr>
 <tr>
-    <td>Password:{{$body}}</td>
+    <td>Password:   {{$body}}</td>
 </tr>
 
     
