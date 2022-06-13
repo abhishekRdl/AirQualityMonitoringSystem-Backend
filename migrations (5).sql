@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 30, 2022 at 12:20 PM
+-- Generation Time: Jun 09, 2022 at 02:34 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.15
 
@@ -62,7 +62,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (22, '2022_03_21_161349_create_user_logs_table', 1),
 (23, '2022_04_11_114631_alter_table_add_three_columns_to_users_table', 1),
 (24, '2022_04_11_150906_create_aqmi_json_data_table', 1),
-(25, '2022_04_21_145528_create_aqi_chart_config_values_table', 1);
+(25, '2022_04_21_145528_create_aqi_chart_config_values_table', 1),
+(26, '2022_04_30_162226_create_bump_test_results_table', 1),
+(27, '2022_05_02_171837_create_calibration_test_results_table', 1),
+(28, '2022_05_05_093108_create_sampled_sensor_data_details_table', 1),
+(29, '2022_06_09_175010_create_alert_crons_table', 2);
 
 --
 -- Indexes for dumped tables
@@ -82,7 +86,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -658,18 +658,31 @@ class AuthController extends Controller
         return response($response,$status);
     } 
 
+    public function tokenDetails(){
+        $userEmail = Auth::user()->email;
+        return response(200);
+
+    }
 
     public function UserLogDetails(Request $request){
         $startDate = $request->fromDate;
         $endDate = $request->toDate;
         $userId = $request->userId;
-        $query = UserLog::whereBetween('created_at', [$startDate, $endDate])
-                 ->where('companyCode','=',$this->companyCode)
-                 ->where('userId','=',$userId)->get();   
-        $response = $query;
+        
+        $query = UserLog::select('*')
+                    ->where('companyCode','=',$this->companyCode)
+                    ->where('userId','=',$userId);
+        if($startDate === $endDate){
+            $query->whereDate('created_at','=',$startDate); 
+        }
+        else{
+            $query->whereBetween('created_at', [$startDate, $endDate]);    
+        }
+        
+        $response = $query->get();
         $status = 200;
         return response($response,$status);
-    }
+    }   
 
     public function userListDetails(Request $request)
     {
@@ -757,6 +770,8 @@ class AuthController extends Controller
         $getData = new DataUtilityController($request,$query);
         $response =   $query->get();
         $status = 200;
+        
+
         
         return response($response,$status);
     }

@@ -101,7 +101,7 @@ class CalibrationTestResultController extends Controller
         $calibrationtestresult->name = $request->name;
         $calibrationtestresult->model = $request->model;
         $calibrationtestresult->testResult = $request->testResult;
-        $calibrationtestresult->calibrationDate = $current_time;;
+        $calibrationtestresult->calibrationDate = $current_time;
         $calibrationtestresult->nextDueDate = $request->nextDueDate;      
         $calibrationtestresult->save();
         $response = [
