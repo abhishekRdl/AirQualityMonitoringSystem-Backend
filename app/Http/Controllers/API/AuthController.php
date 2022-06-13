@@ -682,10 +682,7 @@ class AuthController extends Controller
         $response = $query->get();
         $status = 200;
         return response($response,$status);
-    }
-    
-
-    
+    }   
 
     public function userListDetails(Request $request)
     {
