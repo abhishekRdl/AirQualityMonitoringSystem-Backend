@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\AlertCron;
 use Illuminate\Http\Request;
 
@@ -44,9 +44,19 @@ class AlertCronController extends Controller
      * @param  \App\Models\AlertCron  $alertCron
      * @return \Illuminate\Http\Response
      */
-    public function show(AlertCron $alertCron)
-    {
-        //
+    public function show(Request $request)
+    {   
+       // $deviceId  = $request->device_id;
+
+        $query = AlertCron::select('*')
+                 ->where('deviceId','=','3');
+                
+        $getData = new DataUtilityController($request,$query);
+        $response = $getData->getData();
+        $status = 200;
+
+        return response($response,$status);         
+        
     }
 
     /**
@@ -67,9 +77,31 @@ class AlertCronController extends Controller
      * @param  \App\Models\AlertCron  $alertCron
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AlertCron $alertCron)
+    public function update(Request $request)
     {
-        //
+        $sensorId = $request->sensor_id;
+        $reason = $request->clearAlertReason;
+        $status = 1;
+        $statusMessage = "Cleared";
+                 
+        $query = AlertCron::select('*')
+                    ->where('sensorId','=',$sensorId)
+                    ->where('status','=','0')
+                     ->update([
+                         'Reason' => $reason,
+                         'status' => $status,
+                         'statusMessage'=>$statusMessage
+                    ]);
+        
+        if($query){
+            $response = [
+                "message" => "Alarms Cleared successfully" 
+            ];    
+            $status = 200; 
+        }
+        
+        return response($response,$status);       
+        
     }
 
     /**

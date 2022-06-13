@@ -27,6 +27,8 @@ use App\Http\Controllers\AqiChartConfigValuesController;
 use App\Http\Controllers\BumpTestResultController;
 use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
+use App\Http\Controllers\AlertCronController;
+
 
 
 /*
@@ -40,7 +42,11 @@ use App\Http\Controllers\SampledSensorDataDetailsController;
 |
 */
 
+#http://varmatrix.com/Aqms/blog/public/Customers/A-TEST/Buildings/devices/ConfigSettingFile/dataPush/AQISENSOR_DataPush.json
+#http://127.0.0.1:8000/blog/app/Http/Controllers/CronJobController.php
+#http://varmatrix.com/Aqms/blog/public/app/Http/Controllers/CronJobController.php
 Route::group(['middleware' => ['web']], function () {    
+    
 });
 
 Route::post('register', [AuthController::class,'register']);
@@ -71,7 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //Roles
     Route::post('role/add', [RoleController::class, 'store']);
-    Route::get('role', [RoleController::class, 'index']);
+    // Route::get('role', [RoleController::class, 'index']);
     Route::get('role/{id}/show', [RoleController::class, 'show']);
     Route::post('role/{id}/update', [RoleController::class, 'update']);
     Route::delete('role/{id}/delete', [RoleController::class, 'destroy']);
@@ -190,7 +196,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('tokenDetails', [AuthController::class, 'tokenDetails']);
 
+    Route::post('alertData', [AlertCronController::class, 'show']);
 
+    Route::post('alertDataUpdate', [AlertCronController::class, 'update']);
 
 });
 
@@ -206,16 +214,7 @@ Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
 
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
-Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);     
-
-
-
-
-
-
-
-
-
+Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);  
 
 
 //local

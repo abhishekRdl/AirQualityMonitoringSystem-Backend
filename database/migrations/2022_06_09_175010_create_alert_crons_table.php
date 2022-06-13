@@ -28,6 +28,7 @@ class CreateAlertCronsTable extends Migration
             $table->text('statusMessage')->nullable();
             $table->text('status')->nullable();
             $table->text('alarmType')->nullable();
+            $table->text('Reason')->nullable();
             $table->timestamps();
         });
     }

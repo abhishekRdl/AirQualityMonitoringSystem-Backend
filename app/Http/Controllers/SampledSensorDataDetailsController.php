@@ -6,6 +6,8 @@ use App\Models\SampledSensorDataDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\UtilityController;
+use App\Models\AlertCron;
+use App\Http\Controllers\UTILITY\DataUtilityController;
 
 class SampledSensorDataDetailsController extends Controller
 {
@@ -296,7 +298,16 @@ class SampledSensorDataDetailsController extends Controller
     public function liveDataDeviceId(Request $request){
          
         $deviceId = $request->device_id;
-         
+
+        //getting Count of alerts of particular device
+        $query = AlertCron::select('*')
+                 ->where('deviceId','=','3')
+                 ->where('status','=','0');
+
+        $getData = new DataUtilityController($request,$query);
+        $alertCount = $getData->getData()['totalData'];
+
+        
         $sensorTagsOfDeviceId = DB::table('customers as c')
                 ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
                 ->Join('branches as b', function($join){
@@ -441,9 +452,10 @@ class SampledSensorDataDetailsController extends Controller
                         
                     }
                 }
-        }        
-      
-                
+        }       
+
+        $deviceData['sensorCount'] = $sensorCount;  
+        $deviceData['alertCount'] = $alertCount;              
         $response = $deviceData;
                 
         return response($deviceData, 200);
