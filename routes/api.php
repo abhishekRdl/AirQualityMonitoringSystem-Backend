@@ -209,6 +209,8 @@ Route::post('aqmiDeviceSensorValues', [SampledSensorDataDetailsController::class
 Route::post('lastSampledValues', [SampledSensorDataDetailsController::class, 'lastSampledData']);
 Route::post('sensorTagIdData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagId']);
 
+Route::post('sensorTagIdGraphData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagIdBarLine']);
+
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
