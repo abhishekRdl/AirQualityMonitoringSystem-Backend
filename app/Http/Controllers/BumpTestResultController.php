@@ -141,6 +141,7 @@ class BumpTestResultController extends Controller
                 
                 
         $userNotificationEnabledData = DB::table('users')
+                // ->where('companyCode','=',$this->companyCode)
                 ->where('empNotification','=','1')
                 ->get();
                 
@@ -159,9 +160,9 @@ class BumpTestResultController extends Controller
         if($request->percentageDeviation >= 0 && $request->percentageDeviation <= 10){
             $bumptestresult->result = "Pass";
             
-            foreach($userNotificationEnabledData as $user){
-                $this->sendBumpTestDueDateMailToUsers($query, $user->email, $bumptestresult->result);
-            }
+            // foreach($userNotificationEnabledData as $user){
+            //     $this->sendBumpTestDueDateMailToUsers($query, $user->email, $bumptestresult->result);
+            // }//commented because
             
         }
         else{
@@ -173,8 +174,7 @@ class BumpTestResultController extends Controller
         }
         $bumptestresult->save();
         $response = [
-            "message" => "Bump test Result added successfully"
-            
+            "message" => "Bump test Result added successfully"    
             
         ];
         $status = 201;  

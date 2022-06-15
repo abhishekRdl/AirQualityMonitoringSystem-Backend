@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -629,7 +629,7 @@ class AuthController extends Controller
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $resp = curl_exec($curl);
-        curl_close($curl);           
+        curl_close($curl);            
     }        
 
     /**
@@ -669,9 +669,11 @@ class AuthController extends Controller
         $endDate = $request->toDate;
         $userId = $request->userId;
         
-        $query = UserLog::select('*')
+        $query = DB::table('user_logs')
+                    ->select(DB::raw('*, DATE_FORMAT(created_at,"%d-%m-%Y") as createdDate, TIME(created_at) as createdTime'))
                     ->where('companyCode','=',$this->companyCode)
                     ->where('userId','=',$userId);
+
         if($startDate === $endDate){
             $query->whereDate('created_at','=',$startDate); 
         }
@@ -679,7 +681,10 @@ class AuthController extends Controller
             $query->whereBetween('created_at', [$startDate, $endDate]);    
         }
         
-        $response = $query->get();
+        $response = [
+            "data"=>$query->get()
+        ];
+
         $status = 200;
         return response($response,$status);
     }   
