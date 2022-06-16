@@ -224,7 +224,15 @@ Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);
 Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
 
+
+
+/** Prajwal Reports api begin startDate 16-06-2022 */
+
 Route::post('bumpReport', [BumpTestReportController::class, 'BumpTestReport']); 
+
+
+/** Prajwal Reports api end */
+
 
 //local
 // {
