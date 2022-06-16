@@ -621,7 +621,7 @@ class SensorController extends Controller
                 $sensor->maxRatedReadingScale   = $request->maxRatedReadingScale;
                 $sensor->minRatedReading        = $request->minRatedReading;
                 $sensor->minRatedReadingChecked = $request->minRatedReadingChecked;
-                $sensor->minRatedReadingScale   = $request->minRatedReadingScale;     
+                $sensor->minRatedReadingScale   = $request->minRatedReadingScale;  
                 
             
                 

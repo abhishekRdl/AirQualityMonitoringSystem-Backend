@@ -207,6 +207,7 @@ Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);
 Route::post('aqmiSensorValues', [SampledSensorDataDetailsController::class, 'show']);
 Route::post('aqmiDeviceSensorValues', [SampledSensorDataDetailsController::class, 'deviceSensorShow']);
 Route::post('lastSampledValues', [SampledSensorDataDetailsController::class, 'lastSampledData']);
+
 Route::post('sensorTagIdData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagId']);
 
 Route::post('sensorTagIdGraphData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagIdBarLine']);

@@ -15,6 +15,8 @@ class CreateBumpTestResultsTable extends Migration
     {
         Schema::create('bump_test_results', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('device_id')->unsigned();  
+            $table->foreign('device_id')->references('id')->on('devices')->onDelete('cascade');  
             $table->text('sensorTagName')->nullable();             
             $table->text('lastDueDate')->nullable();   
             $table->text('typeCheck')->nullable();   
