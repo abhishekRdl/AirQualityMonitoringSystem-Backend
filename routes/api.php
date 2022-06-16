@@ -28,6 +28,8 @@ use App\Http\Controllers\BumpTestResultController;
 use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
+use App\Http\Controllers\BumpTestReportController;
+
 
 
 
@@ -180,8 +182,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
 
-    Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
-    Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+    // Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+    // Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 
     Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
     Route::post('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
@@ -219,6 +221,10 @@ Route::get('aqmi', [AqmiJsonDataController::class, 'index']);
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);  
 
+Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+
+Route::post('bumpReport', [BumpTestReportController::class, 'BumpTestReport']); 
 
 //local
 // {
