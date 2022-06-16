@@ -66,6 +66,7 @@ class SensorUnit extends Model
         'parmSevereMinScale',
         'parmSevereMaxScale',                
         
+        'relayOutput',
         
         
     ];

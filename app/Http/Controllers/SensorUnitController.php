@@ -158,6 +158,8 @@ class SensorUnitController extends Controller
                 $sensorUnit->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
                 $sensorUnit->parmSevereMinScale = $request->parmSevereMinScale;
                 $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
+
+                $sensorUnit->relayOutput = $request->relayOutput;
                 
         
                 $sensorUnit->save();
@@ -294,6 +296,8 @@ class SensorUnitController extends Controller
             $sensorUnit->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
             $sensorUnit->parmSevereMinScale = $request->parmSevereMinScale;
             $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
+
+            $sensorUnit->relayOutput = $request->relayOutput;
                 
             $sensorUnit->save();
 
