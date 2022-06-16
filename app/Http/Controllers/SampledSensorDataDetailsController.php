@@ -146,8 +146,8 @@ class SampledSensorDataDetailsController extends Controller
             
                 $otherDataValues = DB::table('sampled_sensor_data_details')
                         ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                           ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                           ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                           ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.time_stamp AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                           ->whereRaw('sampled_sensor_data_details.time_stamp >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                            ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagIds[$x]->id)
                            ->get();
                            
@@ -159,14 +159,14 @@ class SampledSensorDataDetailsController extends Controller
                 if($sensorTagName != ""){
                     $sensorValues = DB::table('sampled_sensor_data_details')
                         ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                        ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.sample_date_time)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                        ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                        ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                        ->whereRaw('sampled_sensor_data_details.time_stamp >=(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                         ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagIds[$x]->id)
                         ->groupBy('timekey')
                         ->get()->toArray();
                                 
                     $sensorData["id"] =$sensorTagIds[$x]->id; 
-                    if($sensorTagIds[$x]->id != 43){
+                    // if($sensorTagIds[$x]->id != 43){
                         $sensorData["sensorTag"] = $sensorTagName;
                         $sensorData["min"] = $minVal;
                         $sensorData["max"] = $maxVal;
@@ -183,7 +183,7 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["max"] = "";
                             $sensorData["avg"] = "";
                         }
-                    }    
+                    // }    
                     
                     
         }
@@ -213,7 +213,8 @@ class SampledSensorDataDetailsController extends Controller
     {
        
     }
-
+    
+    
     public function getLastSampledDataOfSensorTagIdBarLine(Request $request){
         
         if($request->sensorTagId == ""){
@@ -255,8 +256,8 @@ class SampledSensorDataDetailsController extends Controller
             
             $otherDataValues = DB::table('sampled_sensor_data_details')
                                 ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                               ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                               ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                               ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                               ->whereRaw('sampled_sensor_data_details.time_stamp >=(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                                ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagId)
                                ->get();
                                
@@ -268,14 +269,14 @@ class SampledSensorDataDetailsController extends Controller
           
             $sensorValues = DB::table('sampled_sensor_data_details')
                             ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.sample_date_time)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                            ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                            ->whereRaw('sampled_sensor_data_details.time_stamp >=(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                             ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagId)
                             ->groupBy('timekey')
                             ->get()->toArray();                           
            
             $sensorData["sensorTag"] = $sensorTag;
-            
+
             foreach($sensorValues as $sensor){
                 $sensorData["labels"][] = $sensor->DATE_TIME;
                 $sensorData["avgData"][] = $sensor->par_avg;
@@ -295,8 +296,6 @@ class SampledSensorDataDetailsController extends Controller
         
         return response($response,$status);
     }
-    
-    
     
     
     public function getLastSampledDataOfSensorTagId(Request $request){
@@ -340,8 +339,8 @@ class SampledSensorDataDetailsController extends Controller
             
             $otherDataValues = DB::table('sampled_sensor_data_details')
                                 ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                               ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                               ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                               ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.time_stamp AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                               ->whereRaw('sampled_sensor_data_details.time_stamp >= (NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                                ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagId)
                                ->get();
                                
@@ -353,8 +352,8 @@ class SampledSensorDataDetailsController extends Controller
           
             $sensorValues = DB::table('sampled_sensor_data_details')
                             ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.sample_date_time)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                            ->whereRaw('sampled_sensor_data_details.sample_date_time >(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
+                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                            ->whereRaw('sampled_sensor_data_details.time_stamp >= (NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                             ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagId)
                             ->groupBy('timekey')
                             ->get()->toArray();
@@ -381,16 +380,16 @@ class SampledSensorDataDetailsController extends Controller
     public function liveDataDeviceId(Request $request){
          
         $deviceId = $request->device_id;
-
-        //getting Count of alerts of particular device
+        
+        
         $query = AlertCron::select('*')
                  ->where('deviceId','=','3')
                  ->where('status','=','0');
-
+                 
+                
         $getData = new DataUtilityController($request,$query);
         $alertCount = $getData->getData()['totalData'];
-
-        
+         
         $sensorTagsOfDeviceId = DB::table('customers as c')
                 ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
                 ->Join('branches as b', function($join){
@@ -447,7 +446,8 @@ class SampledSensorDataDetailsController extends Controller
                 ->WHERE('deviceId','=',$deviceId)
                 ->get();
                 
-        $length = count($sensorTagsOfDeviceId);        
+        $length = count($sensorTagsOfDeviceId);      
+        $sensorCount = 0;
         
         $deviceData = array();
         $output = array();
@@ -462,15 +462,14 @@ class SampledSensorDataDetailsController extends Controller
                           ->first();
                           
                 if($otherDataValues != ""){
-                    $minVal = $otherDataValues->par_min;
-                    $maxVal = $otherDataValues->par_max;
-                    $avgVal = $otherDataValues->par_avg;
-                    $lastVal = $otherDataValues->par_last;
+                    $minVal = round($otherDataValues->par_min,2);
+                    $maxVal = round($otherDataValues->par_max,2);
+                    $avgVal = round($otherDataValues->par_avg,2);
+                    $lastVal = round($otherDataValues->par_last,2);
                     $sensorTagName = $otherDataValues->sensorTag; 
                     
                     if($sensorTagName != ""){
                         if($sensorTagsOfDeviceId[$x]->sensorOutput == "Analog"){
-                            
                             $sensorData['customerId']  = $sensorTagsOfDeviceId[$x]->customerId;
                             $sensorData['stateName']   = $sensorTagsOfDeviceId[$x]->stateName;
                             $sensorData['branchName']  = $sensorTagsOfDeviceId[$x]->branchName;
@@ -488,8 +487,8 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
                             $deviceData['Analog']['data'][] = $sensorData;
+                            $sensorCount++;
                         }
-                        
                         
                         
                         if($sensorTagsOfDeviceId[$x]->sensorOutput == "Digital"){
@@ -510,8 +509,8 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
                             $deviceData['Digital']['data'][] = $sensorData;
+                            $sensorCount++;
                         }
-                        
                         
                         if($sensorTagsOfDeviceId[$x]->sensorOutput == "Modbus"){
                             $sensorData['customerId']  = $sensorTagsOfDeviceId[$x]->customerId;
@@ -531,14 +530,15 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
                             $deviceData['Modbus']['data'][] = $sensorData;
+                            $sensorCount++;
                         }
-                        
                     }
                 }
-        }       
-
-        $deviceData['sensorCount'] = $sensorCount;  
-        $deviceData['alertCount'] = $alertCount;              
+        }
+           
+        $deviceData['sensorCount'] = $sensorCount;
+        $deviceData['alertCount'] = $alertCount;
+                
         $response = $deviceData;
                 
         return response($deviceData, 200);
