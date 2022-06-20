@@ -77,14 +77,7 @@ class SensorController extends Controller
         try{
             if($request->location_id != "" && $request->branch_id != "" && $request->facility_id != ""  && $request->building_id !="" && $request->floor_id !="" && $request->lab_id !="" && $request->deviceId !=""){
                     $query = Sensor::select(
-                            // 'companyCode',
-                            // 'location_id',
-                            // 'branch_id',   
-                            // 'facility_id', 
-                            // 'building_id',
-                            // 'floor_id',
-                            // 'lab_id',                                              
-                          
+                            // 'companyCode','location_id','branch_id','facility_id', 'building_id','floor_id','lab_id',                                                         
                             
                             'categoryId',//1
                             'deviceCategory',//AQMI
@@ -102,19 +95,11 @@ class SensorController extends Controller
                             'sensorType',
                             'sensorTag',
                             
-                            // 'registerId',
-                            // 'registerType',
-                            // 'slaveId',
-                            
-                            // 'subnetMask',
-                            // 'units',
-                            // 'ipAddress',
-                            // 'length',
+                            // 'registerId','registerType', 'slaveId',
+
+                            // 'subnetMask','units','ipAddress','length',
                     
-                            // 'maxRatedReading',
-                            // 'maxRatedReadingChecked',
-                            // 'maxRatedReadingScale',
-                            // 'minRatedReading',
+                            // 'maxRatedReading','maxRatedReadingChecked','maxRatedReadingScale','minRatedReading',
                             // 'minRatedReadingChecked',
                             // 'minRatedReadingScale',
                             

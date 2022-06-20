@@ -148,6 +148,7 @@ class BumpTestResultController extends Controller
         $current_time = date('Y-m-d H:i:s');         
         $bumptestresult = new BumpTestResult;
         $bumptestresult->companyCode = $this->companyCode;
+        $bumptestresult->device_id = $request->device_id;
         $bumptestresult->sensorTagName = $request->sensorTagName;
         $bumptestresult->lastDueDate = $request->lastDueDate;
         $bumptestresult->typeCheck = $request->typeCheck;
