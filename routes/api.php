@@ -47,6 +47,8 @@ use App\Http\Controllers\BumpTestReportController;
 #http://varmatrix.com/Aqms/blog/public/Customers/A-TEST/Buildings/devices/ConfigSettingFile/dataPush/AQISENSOR_DataPush.json
 #http://127.0.0.1:8000/blog/app/Http/Controllers/CronJobController.php
 #http://varmatrix.com/Aqms/blog/public/app/Http/Controllers/CronJobController.php
+
+
 Route::group(['middleware' => ['web']], function () {    
     
 });
@@ -230,8 +232,6 @@ Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
 
 Route::post('bumpReport', [BumpTestReportController::class, 'BumpTestReport']); 
 
-
-/** Prajwal Reports api end */
 
 
 //local

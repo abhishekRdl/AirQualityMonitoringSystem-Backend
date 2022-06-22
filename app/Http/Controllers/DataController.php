@@ -30,18 +30,7 @@ class DataController extends Controller{
         $sensorCatergoryBased = "";
       
         if($request->location_id != "" && $request->branch_id != "" && $request->facility_id != ""  && $request->building_id !="" && $request->floor_id !="" && $request->lab_id !="" && $request->device_id !=""){
-            // $query = Sensor::query();
-            // $query->where('companyCode','=',$this->companyCode);    
-            // $query->where('location_id','=',$request->location_id); 
-            // $query->where('branch_id','=',$request->branch_id); 
-            // $query->where('facility_id','=',$request->facility_id); 
-            // $query->where('building_id','=',$request->building_id); 
-            // $query->where('floor_id','=',$request->floor_id); 
-            // $query->where('lab_id','=',$request->lab_id); 
-            // $query->where('device_id','=',$request->device_id); 
-            // $this->table  = "Sensors";
-            
-            
+          
             $query = Sensor::select( '*'              
                         );
                     $query->where('companyCode','=',$this->companyCode);
