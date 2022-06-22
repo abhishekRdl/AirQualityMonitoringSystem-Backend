@@ -28,7 +28,7 @@ use App\Http\Controllers\BumpTestResultController;
 use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
-use App\Http\Controllers\BumpTestReportController;
+use App\Http\Controllers\ReportController;
 
 
 
@@ -228,7 +228,8 @@ Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
 
 /** Prajwal Reports api begin startDate 16-06-2022 */
 
-Route::post('bumpReport', [BumpTestReportController::class, 'BumpTestReport']); 
+Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
+Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
 
 
 /** Prajwal Reports api end */

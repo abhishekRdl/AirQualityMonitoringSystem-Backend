@@ -45,8 +45,7 @@ class BumpTestResultController extends Controller
             $query = DB::table('bump_test_results')
             ->select('*')
             ->where('sensorTagName','=',$request->sensorTagName)
-            ->where('companyCode','=',$this->companyCode);            
-            
+            ->where('companyCode','=',$this->companyCode);
             $getData = new DataUtilityController($request,$query);
             
             $response = [
@@ -148,6 +147,7 @@ class BumpTestResultController extends Controller
         $current_time = date('Y-m-d H:i:s');         
         $bumptestresult = new BumpTestResult;
         $bumptestresult->companyCode = $this->companyCode;
+        $bumptestresult->device_id = $request->device_id;
         $bumptestresult->sensorTagName = $request->sensorTagName;
         $bumptestresult->lastDueDate = $request->lastDueDate;
         $bumptestresult->typeCheck = $request->typeCheck;
@@ -172,6 +172,7 @@ class BumpTestResultController extends Controller
                 $this->sendBumpTestDueDateMailToUsers($query, $user->email, $bumptestresult->result);
             }            
         }
+
         $bumptestresult->save();
         $response = [
             "message" => "Bump test Result added successfully"    
