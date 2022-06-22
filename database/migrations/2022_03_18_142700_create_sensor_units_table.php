@@ -65,7 +65,9 @@ class CreateSensorUnitsTable extends Migration
             $table->text('parmVeryPoorMinScale')->nullable();
             $table->text('parmVeryPoorMaxScale')->nullable();
             $table->text('parmSevereMinScale')->nullable();
-            $table->text('parmSevereMaxScale')->nullable();       
+            $table->text('parmSevereMaxScale')->nullable();     
+            
+            $table->text('relayOutput')->nullable();
             
             $table->timestamps();
         });
