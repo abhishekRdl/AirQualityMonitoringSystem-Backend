@@ -22,6 +22,7 @@ class CreateSampledSensorDataDetailsTable extends Migration
             $table->string('min_val')->nullable();
             $table->string('avg_val')->nullable();
             $table->string('sample_date_time')->nullable();
+            $table->text('alertType')->nullable();
             $table->timestamp('time_stamp')->useCurrent()->useCurrentOnUpdate();
             $table->string('param_unit')->nullable();
             $table->timestamps();
