@@ -73,7 +73,7 @@ class CustomerController extends Controller
             $customer->email = $request->email;
             $customer->phoneNo = $request->phoneNo;  
             $customer->address = $request->address;
-            $customer->customerId = $request->customerId;  
+            $customer->customerId = $request->customerId;              
             $imagePath = "";
             
             $image = $request->customerLogo;  // your base64 encoded
@@ -126,6 +126,10 @@ class CustomerController extends Controller
 
             $customer->customerLogo = $imagePath;
             $customer->customerTheme = $request->customerTheme;   
+            $customer->alertLogInterval = $request->alertLogInterval;  
+            $customer->deviceLogInterval = $request->deviceLogInterval;  
+            $customer->sensorLogInterval = $request->sensorLogInterval;  
+
             $customer->save();
 
 
@@ -215,6 +219,9 @@ class CustomerController extends Controller
             }
            
             $customer->customerTheme = $request->customerTheme;
+            $customer->alertLogInterval = $request->alertLogInterval;  
+            $customer->deviceLogInterval = $request->deviceLogInterval;  
+            $customer->sensorLogInterval = $request->sensorLogInterval;  
             
             
             

@@ -15,7 +15,8 @@ class CreateSampledSensorDataDetailsTable extends Migration
     {
         Schema::create('sampled_sensor_data_details', function (Blueprint $table) {
             $table->id();
-            $table->string('sensor_id')->nullable();
+            $table->string('device_id')->nullable();
+            $table->string('sensor_id')->nullable();            
             $table->string('parameterName')->nullable();
             $table->string('last_val')->nullable();
             $table->string('max_val')->nullable();

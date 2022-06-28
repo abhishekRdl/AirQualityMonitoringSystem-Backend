@@ -29,6 +29,7 @@ use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AlertController;
 
 
 
@@ -184,8 +185,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::post('stel/{id}/update',[SensorUnitController::class,'StelTwd']);
 
-    // Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
-    // Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
+    Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+    Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
 
     Route::post('calibrationTestResult/add',[CalibrationTestResultController::class,'store']);
     Route::post('calibrationTestResult', [CalibrationTestResultController::class, 'index']);    
@@ -197,39 +198,45 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('sendMessage', [Authcontroller::class, 'sendMessage']);
 
     Route::post('userLog', [AuthController::class, 'UserLogDetails']);
-
-    Route::post('tokenDetails', [AuthController::class, 'tokenDetails']);
-
+   
     Route::post('alertData', [AlertCronController::class, 'show']);
 
-    Route::post('alertDataUpdate', [AlertCronController::class, 'update']);
+    Route::post('alertDataUpdate', [AlertCronController::class, 'update']);   
+
+
 
 });
 
+//USED FOR QUERY WRITING
+Route::post('query', [BumpTestResultController::class, 'sql']); 
 
-Route::post('aqmiValues', [SampledSensorDataDetailsController::class, 'index']);   
+
+
+//CURRENTLY FOR TESTING VALUE IT IS KEPT OUTSIDE AUTHENTICATION, AFTER COMPLETION NEED TO SHIFT TO AUTHENTICATION IN THE TOP
 Route::post('aqmiSensorValues', [SampledSensorDataDetailsController::class, 'show']);
 Route::post('aqmiDeviceSensorValues', [SampledSensorDataDetailsController::class, 'deviceSensorShow']);
 Route::post('lastSampledValues', [SampledSensorDataDetailsController::class, 'lastSampledData']);
-
 Route::post('sensorTagIdData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagId']);
+Route::post('lastUpdatedData', [SampledSensorDataDetailsController::class, 'liveDataDeviceId']);
+//Route::post('sensorTagIdGraphData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagIdBarLine']);
 
-Route::post('sensorTagIdGraphData', [SampledSensorDataDetailsController::class, 'getLastSampledDataOfSensorTagIdBarLine']);
+Route::post('/getAlerts', [AlertController::class, 'getAlertData']);
 
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
 
-Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
-Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']);  
 
-Route::get('bumpTestResult', [BumpTestResultController::class, 'index']); 
-Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
+//NOT USED APIS
+Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
+Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']); 
+
 
 
 
 /** Prajwal Reports api begin startDate 16-06-2022 */
 
+//CURRENTLY FOR TESTING VALUE IT IS KEPT OUTSIDE AUTHENTICATION, AFTER COMPLETION NEED TO SHIFT TO AUTHENTICATION IN THE TOP
 Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
 Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
 

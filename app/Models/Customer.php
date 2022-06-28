@@ -16,6 +16,10 @@ class Customer extends Model
         'address',
         'customerId',
         'customerLogo',
-        'customerTheme'       
+        'customerTheme',
+        'alertLogInterval',
+        'deviceLogInterval',
+        'sensorLogInterval'
+
     ];
 }

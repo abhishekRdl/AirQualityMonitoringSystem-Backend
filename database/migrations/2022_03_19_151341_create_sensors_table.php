@@ -42,7 +42,7 @@ class CreateSensorsTable extends Migration
             $table->bigInteger('sensor_id')->unsigned();  
             $table->foreign('sensor_id')->references('id')->on('sensor_categories')->onDelete('cascade');  
             //SENSOR  details
-            $table->text('sensorName')->unique();         
+            $table->string('sensorName')->unique();         
             $table->text('sensorOutput')->nullable();
             $table->text('sensorVolt')->nullable();
             $table->text('registerAddress')->nullable();

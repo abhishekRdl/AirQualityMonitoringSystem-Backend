@@ -656,13 +656,7 @@ class AuthController extends Controller
         ];
         $status = 200;
         return response($response,$status);
-    } 
-
-    public function tokenDetails(){
-        $userEmail = Auth::user()->email;
-        return response(200);
-
-    }
+    }     
 
     public function UserLogDetails(Request $request){
         $startDate = $request->fromDate;
@@ -774,8 +768,7 @@ class AuthController extends Controller
         
         $getData = new DataUtilityController($request,$query);
         $response =   $query->get();
-        $status = 200;
-        
+        $status = 200;       
 
         
         return response($response,$status);

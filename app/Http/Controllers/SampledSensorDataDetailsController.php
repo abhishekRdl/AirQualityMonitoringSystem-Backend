@@ -478,11 +478,11 @@ class SampledSensorDataDetailsController extends Controller
         
         for($x=0;$x<$length;$x++){
             $otherDataValues = DB::table('sampled_sensor_data_details')
-                         ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                          ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.alertType,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,sampled_sensor_data_details.max_val as par_max,sampled_sensor_data_details.min_val as par_min,sampled_sensor_data_details.avg_val as par_avg,sampled_sensor_data_details.last_val as par_last'))
-                          ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagsOfDeviceId[$x]->id)
-                          ->orderBy('sampled_sensor_data_details.id','desc')
-                          ->first();
+                        ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
+                        ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.alertType,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,sampled_sensor_data_details.max_val as par_max,sampled_sensor_data_details.min_val as par_min,sampled_sensor_data_details.avg_val as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                        ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagsOfDeviceId[$x]->id)
+                        ->orderBy('sampled_sensor_data_details.id','desc')
+                        ->first();
                           
                 if($otherDataValues != ""){
                     $minVal = round($otherDataValues->par_min,2);

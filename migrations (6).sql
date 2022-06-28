@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 09, 2022 at 02:34 PM
+-- Generation Time: Jun 22, 2022 at 10:40 AM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 8.0.15
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `aidealab_standarddb`
+-- Database: `aqms`
 --
 
 -- --------------------------------------------------------
@@ -66,7 +66,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (26, '2022_04_30_162226_create_bump_test_results_table', 1),
 (27, '2022_05_02_171837_create_calibration_test_results_table', 1),
 (28, '2022_05_05_093108_create_sampled_sensor_data_details_table', 1),
-(29, '2022_06_09_175010_create_alert_crons_table', 2);
+(29, '2022_06_09_175010_create_alert_crons_table', 1);
 
 --
 -- Indexes for dumped tables
