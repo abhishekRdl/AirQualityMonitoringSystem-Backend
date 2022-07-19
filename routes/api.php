@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -29,7 +28,10 @@ use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\AlertController;
+use App\Http\Middleware\CheckReportHeaders;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -238,8 +240,8 @@ Route::get('export', [RoleController::class, 'export']);
 //CURRENTLY FOR TESTING VALUE IT IS KEPT OUTSIDE AUTHENTICATION, AFTER COMPLETION NEED TO SHIFT TO AUTHENTICATION IN THE TOP
 Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
 Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
-
-
+Route::get('exportCsv', [ReportController::class, 'exportAlarm'])->middleware(CheckReportHeaders::class);
+Route::get('exportBumpTestCsv', [ReportController::class, 'exportBumpTest'])->middleware(CheckReportHeaders::class);
 
 //local
 // {
