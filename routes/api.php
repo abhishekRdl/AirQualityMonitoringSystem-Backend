@@ -28,6 +28,7 @@ use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
 use App\Http\Controllers\ReportController;
+use App\Http\Middleware\CheckReportHeaders;
 
 
 
@@ -231,8 +232,8 @@ Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
 
 Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
 Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
-
-
+Route::get('exportCsv', [ReportController::class, 'exportAlarm'])->middleware(CheckReportHeaders::class);
+Route::get('exportBumpTestCsv', [ReportController::class, 'exportBumpTest'])->middleware(CheckReportHeaders::class);
 
 //local
 // {
