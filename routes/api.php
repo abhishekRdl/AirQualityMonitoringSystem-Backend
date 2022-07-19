@@ -240,7 +240,7 @@ Route::get('export', [RoleController::class, 'export']);
 //CURRENTLY FOR TESTING VALUE IT IS KEPT OUTSIDE AUTHENTICATION, AFTER COMPLETION NEED TO SHIFT TO AUTHENTICATION IN THE TOP
 Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
 Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
-Route::get('exportCsv', [ReportController::class, 'exportAlarm'])->middleware(CheckReportHeaders::class);
+Route::get('exportAlarm', [ReportController::class, 'exportAlarm'])->middleware(CheckReportHeaders::class);
 Route::get('exportBumpTestCsv', [ReportController::class, 'exportBumpTest'])->middleware(CheckReportHeaders::class);
 
 //local
