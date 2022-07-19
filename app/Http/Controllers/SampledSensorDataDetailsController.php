@@ -404,13 +404,17 @@ class SampledSensorDataDetailsController extends Controller
         $deviceId = $request->device_id;
         
         
-        $query = AlertCron::select('*')
-                 ->where('deviceId','=','3')
-                 ->where('status','=','0');
+        $alertQuery = AlertCron::select('*')
+                     ->where('deviceId','=',$deviceId)
+                     ->where('companyCode','=',$this->companyCode)
+                     ->where('status','=','0')
+                     ->get();
+                 
+        $alertCount = $alertQuery->count();      
                  
                 
-        $getData = new DataUtilityController($request,$query);
-        $alertCount = $getData->getData()['totalData'];
+        // $getData = new DataUtilityController($request,$query);
+        // $alertCount = $getData->getData()['totalData'];
          
         $sensorTagsOfDeviceId = DB::table('customers as c')
                 ->join('locations as l', 'c.customerId', '=', 'l.companyCode')

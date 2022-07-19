@@ -19,7 +19,9 @@ class Customer extends Model
         'customerTheme',
         'alertLogInterval',
         'deviceLogInterval',
-        'sensorLogInterval'
+        'sensorLogInterval',
+        'periodicBackupInterval',
+        'dataRetentionPeriodInterval'
 
     ];
 }

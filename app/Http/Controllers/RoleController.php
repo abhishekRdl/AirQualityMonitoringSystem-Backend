@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\Role;
+use App\Exports\RoleExport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MailNotify;
+
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as BaseExcel;
 
 use Illuminate\Http\Request;
 
@@ -153,5 +159,29 @@ class RoleController extends Controller
         }
         return response($response,$status);
 
+    }
+
+    public function export(Request $request) 
+    {
+        $rolename = "edirtssss";  
+
+        $filename = "role.xlsx";   
+        $attachment = Excel::raw(new RoleExport($rolename),BaseExcel::CSV);     
+
+
+        $email = "abhishek@rdltech.in";
+        $data = [
+            'userid'=>$email,
+            'subject' => 'Application employee Credentials',
+            'body' =>"123456"
+        ];
+
+        Mail::send('credentialmail',$data, function($messages) use ($email,$attachment){
+            $messages->to($email);
+            $messages->subject('Application login credentials');    
+            $messages->attachData($attachment, 'role.xlsx');    
+        });
+
+        
     }
 }

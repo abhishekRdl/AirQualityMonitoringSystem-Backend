@@ -129,6 +129,23 @@ class SensorUnitController extends Controller
                 $sensorUnit->conversionType = $request->conversionType;
                 $sensorUnit->ipAddress = $request->ipAddress;
                 $sensorUnit->subnetMask = $request->subnetMask;  
+
+
+
+                $sensorUnit->criticalMinValue = $request->criticalMinValue;
+                $sensorUnit->criticalMaxValue = $request->criticalMaxValue;
+   
+
+                $sensorUnit->warningMinValue = $request->warningMinValue;
+                $sensorUnit->warningMaxValue = $request->warningMaxValue;
+  
+
+                $sensorUnit->outofrangeMinValue = $request->outofrangeMinValue;
+                $sensorUnit->outofrangeMaxValue = $request->outofrangeMaxValue;
+    
+
+
+
                 
                 $sensorUnit->isStel = $request->isStel;                
                 $sensorUnit->stelDuration = $request->stelDuration;
@@ -267,7 +284,17 @@ class SensorUnitController extends Controller
             $sensorUnit->conversionType = $request->conversionType;
             $sensorUnit->ipAddress = $request->ipAddress;
             $sensorUnit->subnetMask = $request->subnetMask; 
-            
+
+            $sensorUnit->criticalMinValue = $request->criticalMinValue;
+            $sensorUnit->criticalMaxValue = $request->criticalMaxValue;
+
+            $sensorUnit->warningMinValue = $request->warningMinValue;
+            $sensorUnit->warningMaxValue = $request->warningMaxValue;        
+
+            $sensorUnit->outofrangeMinValue = $request->outofrangeMinValue;
+            $sensorUnit->outofrangeMaxValue = $request->outofrangeMaxValue;                
+
+
             $sensorUnit->isStel = $request->isStel;                
             $sensorUnit->stelDuration = $request->stelDuration;
             $sensorUnit->stelType = $request->stelType;

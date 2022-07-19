@@ -24,7 +24,11 @@ class CreateCustomersTable extends Migration
             $table->string('customerTheme');
             $table->string('alertLogInterval')->nullable();
             $table->string('deviceLogInterval')->nullable();
-            $table->string('sensorLogInterval')->nullable();
+            $table->string('sensorLogInterval')->nullable(); 
+
+            $table->string('periodicBackupInterval')->nullable();
+            $table->string('dataRetentionPeriodInterval')->nullable();
+
             $table->timestamps();
         });
     }

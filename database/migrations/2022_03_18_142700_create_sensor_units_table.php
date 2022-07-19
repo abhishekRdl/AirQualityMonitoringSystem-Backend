@@ -37,6 +37,15 @@ class CreateSensorUnitsTable extends Migration
             $table->string('ipAddress')->nullable();
             $table->string('subnetMask')->nullable(); 
 
+            $table->string('criticalMinValue')->nullable();
+            $table->string('criticalMaxValue')->nullable();            
+
+            $table->string('warningMinValue')->nullable();
+            $table->string('warningMaxValue')->nullable();            
+
+            $table->string('outofrangeMinValue')->nullable();
+            $table->string('outofrangeMaxValue')->nullable();
+            
 
             $table->string('isStel')->nullable(); 
             $table->string('stelDuration')->nullable(); 

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\UtilityController;
+use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\Sensor;
+use App\Models\SensorLimitChangeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,6 +16,7 @@ use App\Models\Device;
 use App\Models\SensorCategory;
 use App\Models\SensorUnit;
 use App\Http\Controllers\UserLog;
+use Auth;
 
 class SensorController extends Controller
 {
@@ -31,7 +34,7 @@ class SensorController extends Controller
         $getData = new UtilityController($request);
         $this->companyCode = $getData->getCompanyCode();        
     }
-
+    
     public function getSensorTagData(Request $request){
         $query = Sensor::select(
                     'companyCode',
@@ -72,12 +75,21 @@ class SensorController extends Controller
         
     }
 
+
     public function index(Request $request)
     {
         try{
             if($request->location_id != "" && $request->branch_id != "" && $request->facility_id != ""  && $request->building_id !="" && $request->floor_id !="" && $request->lab_id !="" && $request->deviceId !=""){
                     $query = Sensor::select(
-                            // 'companyCode','location_id','branch_id','facility_id', 'building_id','floor_id','lab_id',                                                         
+                            // 'companyCode',
+                            // 'location_id',
+                            // 'branch_id',   
+                            // 'facility_id', 
+                            // 'building_id',
+                            // 'floor_id',
+                            // 'lab_id',
+                                                
+                          
                             
                             'categoryId',//1
                             'deviceCategory',//AQMI
@@ -95,11 +107,19 @@ class SensorController extends Controller
                             'sensorType',
                             'sensorTag',
                             
-                            // 'registerId','registerType', 'slaveId',
-
-                            // 'subnetMask','units','ipAddress','length',
+                            // 'registerId',
+                            // 'registerType',
+                            // 'slaveId',
+                            
+                            // 'subnetMask',
+                            // 'units',
+                            // 'ipAddress',
+                            // 'length',
                     
-                            // 'maxRatedReading','maxRatedReadingChecked','maxRatedReadingScale','minRatedReading',
+                            // 'maxRatedReading',
+                            // 'maxRatedReadingChecked',
+                            // 'maxRatedReadingScale',
+                            // 'minRatedReading',
                             // 'minRatedReadingChecked',
                             // 'minRatedReadingScale',
                             
@@ -124,7 +144,8 @@ class SensorController extends Controller
                             // 'outofrangeAlertType',
                             // 'outofrangeLowAlert',
                             // 'outofrangeHighAlert',
-          
+        
+                        
                         
                         
                         
@@ -305,7 +326,6 @@ class SensorController extends Controller
                     $query2->where('lab_id','=',$request->lab_id);
                     $query2->where('deviceId','=',$request->deviceId);
                     $query2->where('sensorOutput','=','Modbus');
-                    
                     $perPage = 20;
                     $page = $request->input(key:'page', default:1);
                     $total2 = $query2->count();
@@ -368,8 +388,11 @@ class SensorController extends Controller
      */
     public function store(Request $request)
     {
-        try{             
-            $sensorDataFound = DB::table('sensors')
+        try{  
+            
+           
+            
+             $sensorDataFound = DB::table('sensors')
                ->where('companyCode','=',$this->companyCode)    
                 ->where('location_id','=',$request->location_id)
                 ->where('branch_id','=',$request->branch_id)
@@ -383,10 +406,10 @@ class SensorController extends Controller
            
             if($sensorDataFound){
                 throw new Exception("{$request->sensorTag} sensor is already deployed for device ");
-            }         
-
-            $sensor = new Sensor;           
+            }
             
+            
+            $sensor = new Sensor;
             $sensor->companyCode=$this->companyCode;
             $sensor->location_id=$request->location_id;
             $sensor->branch_id=$request->branch_id;
@@ -429,8 +452,7 @@ class SensorController extends Controller
             $sensor->maxRatedReadingScale   = $request->maxRatedReadingScale;
             $sensor->minRatedReading        = $request->minRatedReading;
             $sensor->minRatedReadingChecked = $request->minRatedReadingChecked;
-            $sensor->minRatedReadingScale   = $request->minRatedReadingScale;    
-            
+            $sensor->minRatedReadingScale   = $request->minRatedReadingScale;
             
             $sensor->pollingIntervalType = $request->pollingIntervalType;
             
@@ -442,7 +464,7 @@ class SensorController extends Controller
             
             $sensor->warningMinValue = $request->warningMinValue;
             $sensor->warningMaxValue = $request->warningMaxValue;
-            $sensor->warningAlertType = $request->warningAlertType; 
+            $sensor->warningAlertType = $request->warningAlertType;
             $sensor->warningLowAlert = $request->warningLowAlert;
             $sensor->warningHighAlert = $request->warningHighAlert;
             
@@ -455,8 +477,7 @@ class SensorController extends Controller
             $sensor->digitalAlertType = $request->digitalAlertType;
             $sensor->digitalLowAlert = $request->digitalLowAlert;
             $sensor->digitalHighAlert = $request->digitalHighAlert;
-
-
+            
             $sensor->isStel = $request->isStel;                
             $sensor->stelDuration = $request->stelDuration;
             $sensor->stelType = $request->stelType;
@@ -484,9 +505,11 @@ class SensorController extends Controller
             $sensor->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
             $sensor->parmSevereMinScale = $request->parmSevereMinScale;
             $sensor->parmSevereMaxScale = $request->parmSevereMaxScale;
-
+            
             $sensor->relayOutput = $request->relayOutput;
             $sensor->sensorFault = $request->sensorFault;  
+            
+            $sensor->audioDecibelLevel = 68;
             
                 
 
@@ -503,10 +526,10 @@ class SensorController extends Controller
             $status = 406; 
         }  catch (Exception $e){
             $response = [
-                "error"=>$e->getMessage()
+                "error"=> $e->getMessage()
             ];
             $status = 404;
-        }     
+        }    
        
        return response($response,$status);   
     }
@@ -542,14 +565,23 @@ class SensorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        
+        $criticalMinValueChange="";
+        $criticalMaxValueChange="";
+        $warningMinValueChange="";
+        $warningMaxValueChange="";
+        $outofrangeMinValueChange="";
+        $outofrangeMaxValueChange="";
+            
+            
         try{         
             $sensorDataFound = Sensor::find($id);    
             if(!$sensorDataFound){
                 throw new Exception("Data not founds");
-            }     
+            }  
             
             $sensorDataFound = DB::table('sensors')
-               ->where('companyCode','=',$this->companyCode)    
+              ->where('companyCode','=',$this->companyCode)    
                 ->where('location_id','=',$request->location_id)
                 ->where('branch_id','=',$request->branch_id)
                 ->where('facility_id','=',$request->facility_id) 
@@ -565,32 +597,53 @@ class SensorController extends Controller
                 throw new Exception("{$request->sensorTag} sensor is already deployed for device ");
             }  
 
+
             $sensor = Sensor::find($id);    
+            
+            
+            
             if($sensor){  
+                
+                
                 $sensor->companyCode=$this->companyCode;
+                
+                
+                $criticalMinValueChange = "OLD - ".$sensor->criticalMinValue." AND NEW - ".$request->criticalMinValue;
+                $criticalMaxValueChange = "OLD - ".$sensor->criticalMaxValue." AND NEW - ".$request->criticalMaxValue;
+                $warningMinValueChange = "OLD - ".$sensor->warningMinValue." AND NEW - ".$request->warningMinValue;
+                $warningMaxValueChange = "OLD - ".$sensor->warningMaxValue." AND NEW - ".$request->warningMaxValue;
+                $outofrangeMinValueChange = "OLD - ".$sensor->outofrangeMinValue." AND NEW - ".$request->outofrangeMinValue;
+                $outofrangeMaxValueChange = "OLD - ".$sensor->outofrangeMaxValue." AND NEW - ".$request->outofrangeMaxValue;
+                
+                
+                //commented for time being testing limit changes
+                
                 $sensor->location_id=$request->location_id;
                 $sensor->branch_id=$request->branch_id;
                 $sensor->facility_id=$request->facility_id;
                 $sensor->building_id=$request->building_id;
                 $sensor->floor_id=$request->floor_id;
                 $sensor->lab_id=$request->lab_id;
-    
-                $sensor->sensorCategoryId=$request->sensorCategoryId;            
-                $categories = Categories::where('id',$request->sensorCategoryId)->first();        
+                
+                $sensor->categoryId=$request->categoryId;            
+                $categories = Categories::where('id',$request->categoryId)->first();        
                 $sensor->deviceCategory= $categories->categoryName;
-    
     
                 $sensor->deviceId=$request->deviceId;  
                 $devices = Device::where('id',$request->deviceId)->first();
                 $sensor->deviceName = $devices->deviceName;
-    
-    
+                
+                $sensor->sensorCategoryId=$request->sensorCategoryId;            
+                $sensorCategories = SensorCategory::where('id',$request->sensorCategoryId)->first();        
+                $sensor->sensorCategoryName= $sensorCategories->sensorName;
+               
+                
                 $sensor->sensorName=$request->sensorName;
                 $sensorUnit = SensorUnit::where('id',$request->sensorName)->first();        
                 $sensor->sensorNameUnit= $sensorUnit->sensorName;
-        
+                
                 $sensor->conversionType=$request->conversionType;
-            
+                
                 $sensor->sensorOutput= $request->sensorOutput;
                 $sensor->sensorType  = $request->sensorType;
                 $sensor->sensorTag   = $request->sensorTag;
@@ -606,35 +659,40 @@ class SensorController extends Controller
                 $sensor->maxRatedReadingScale   = $request->maxRatedReadingScale;
                 $sensor->minRatedReading        = $request->minRatedReading;
                 $sensor->minRatedReadingChecked = $request->minRatedReadingChecked;
-                $sensor->minRatedReadingScale   = $request->minRatedReadingScale;  
-                
-            
-                
+                $sensor->minRatedReadingScale   = $request->minRatedReadingScale;
                 
                 $sensor->pollingIntervalType = $request->pollingIntervalType;
                 
                 $sensor->criticalMinValue = $request->criticalMinValue;
                 $sensor->criticalMaxValue = $request->criticalMaxValue;
+                
+                
                 $sensor->criticalAlertType = $request->criticalAlertType;
                 $sensor->criticalLowAlert = $request->criticalLowAlert;
                 $sensor->criticalHighAlert = $request->criticalHighAlert;
                 
                 $sensor->warningMinValue = $request->warningMinValue;
                 $sensor->warningMaxValue = $request->warningMaxValue;
+                
+                
                 $sensor->warningAlertType = $request->warningAlertType;
                 $sensor->warningLowAlert = $request->warningLowAlert;
                 $sensor->warningHighAlert = $request->warningHighAlert;
                 
                 $sensor->outofrangeMinValue = $request->outofrangeMinValue;
                 $sensor->outofrangeMaxValue = $request->outofrangeMaxValue;
+                
+                
                 $sensor->outofrangeAlertType = $request->outofrangeAlertType;
                 $sensor->outofrangeLowAlert = $request->outofrangeLowAlert;
                 $sensor->outofrangeHighAlert = $request->outofrangeHighAlert;
                 
+                
+                
                 $sensor->digitalAlertType = $request->digitalAlertType;
                 $sensor->digitalLowAlert = $request->digitalLowAlert;
                 $sensor->digitalHighAlert = $request->digitalHighAlert;
-
+                
                 $sensor->isStel = $request->isStel;                
                 $sensor->stelDuration = $request->stelDuration;
                 $sensor->stelType = $request->stelType;
@@ -645,33 +703,50 @@ class SensorController extends Controller
                 $sensor->twaType = $request->twaType;
                 $sensor->twaLimit = $request->twaLimit;
                 $sensor->twaAlert = $request->twaAlert;
-
+    
                 $sensor->alarm = $request->alarm;
                 $sensor->unLatchDuration = $request->unLatchDuration;  
                 
-                $sensor->isAQI = $request->isAQI;         
-                $sensor->parmGoodMinScale = $request->parmGoodMinScale;
-                $sensor->parmGoodMaxScale = $request->parmGoodMaxScale;
-                $sensor->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
-                $sensor->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
-                $sensor->parmModerateMinScale = $request->parmModerateMinScale;
-                $sensor->parmModerateMaxScale = $request->parmModerateMaxScale;
-                $sensor->parmPoorMinScale = $request->parmPoorMinScale;
-                $sensor->parmPoorMaxScale = $request->parmPoorMaxScale;
-                $sensor->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
-                $sensor->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
-                $sensor->parmSevereMinScale = $request->parmSevereMinScale;
-                $sensor->parmSevereMaxScale = $request->parmSevereMaxScale;
-
-
+                $sensorUnit->isAQI = $request->isAQI;         
+                $sensorUnit->parmGoodMinScale = $request->parmGoodMinScale;
+                $sensorUnit->parmGoodMaxScale = $request->parmGoodMaxScale;
+                $sensorUnit->parmSatisfactoryMinScale = $request->parmSatisfactoryMinScale;
+                $sensorUnit->parmSatisfactoryMaxScale = $request->parmSatisfactoryMaxScale;
+                $sensorUnit->parmModerateMinScale = $request->parmModerateMinScale;
+                $sensorUnit->parmModerateMaxScale = $request->parmModerateMaxScale;
+                $sensorUnit->parmPoorMinScale = $request->parmPoorMinScale;
+                $sensorUnit->parmPoorMaxScale = $request->parmPoorMaxScale;
+                $sensorUnit->parmVeryPoorMinScale = $request->parmVeryPoorMinScale;
+                $sensorUnit->parmVeryPoorMaxScale = $request->parmVeryPoorMaxScale;
+                $sensorUnit->parmSevereMinScale = $request->parmSevereMinScale;
+                $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
+                
                 $sensor->relayOutput = $request->relayOutput;
-                $sensor->sensorFault = $request->sensorFault;    
-
-                $sensor->save();
-                $response = [
+                $sensor->sensorFault = $request->sensorFault;  
+               
+    
+                if($sensor->save()){
+                    
+                    $SensorLimitChangeLog = new SensorLimitChangeLog;
+                    $SensorLimitChangeLog->companyCode = $this->companyCode;
+                    $SensorLimitChangeLog->device_id = $request->deviceId;
+                    $SensorLimitChangeLog->sensor_id = $id;
+                    $SensorLimitChangeLog->criticalMinValue = $criticalMinValueChange;
+                    $SensorLimitChangeLog->criticalMaxValue = $criticalMaxValueChange;
+                    $SensorLimitChangeLog->warningMinValue = $warningMinValueChange;
+                    $SensorLimitChangeLog->warningMaxValue = $warningMaxValueChange;
+                    $SensorLimitChangeLog->outofrangeMinValue = $outofrangeMinValueChange;
+                    $SensorLimitChangeLog->outofrangeMaxValue = $outofrangeMaxValueChange;
+                    $SensorLimitChangeLog->email = Auth::user()->email;
+                    $SensorLimitChangeLog->save();
+                    
+                    $response = [
+                    
                     "message" => "Sensor updated successfully"
-                ];
-                $status = 200;     
+                    ];
+                    $status = 200;     
+                }
+                
             }   
         }catch (QueryException $e) {
             $response = [
@@ -717,12 +792,11 @@ class SensorController extends Controller
                     
         return response($response,$status); 
     }
-
+    
     public function deviceDeployedSensors($id)
     {
         $query = Sensor::select('sensorTag');
-        $query->where('deviceId','=',$id);      
-       
+        $query->where('deviceId','=',$id);  
 
 
         $response = $query->get();
@@ -730,7 +804,7 @@ class SensorController extends Controller
         
         return response($response,$status);
     }
-
+    
     public function sensorPropertiesUpdate(Request $request,$id){
         $sensor = Sensor::find($id);    
         if($sensor){  
@@ -739,12 +813,20 @@ class SensorController extends Controller
             }
             if($request->notificationStatus!=""){
                 $sensor->notificationStatus=$request->notificationStatus;
-            }            
+            }  
+            
+            if($request->hooterRelayStatus!=""){
+                $sensor->hooterRelayStatus = $request->hooterRelayStatus;
+            }
+            
+            if($request->audioDecibelLevel!=""){
+                $sensor->audioDecibelLevel = $request->audioDecibelLevel;
+            }
             
             $sensor->update();
             
             $response = [
-                "message" => "Sensor Properties Updated successfully",
+                "message" => "Settings Updated Successfully",
                 "sensor_id"=>$id
             ];
             $status = 200; 
@@ -752,4 +834,7 @@ class SensorController extends Controller
         
         return response($response,$status);
     }
+    
+    
+    
 }

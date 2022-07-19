@@ -19,12 +19,19 @@ class SensorUnit extends Model
         'sensorOutput',
         'sensorType',
         'units',
+
+
+        /**columns used in sensor table begin */
+
         'minRatedReading',
         'minRatedReadingChecked',
         'minRatedReadingScale',
         'maxRatedReading',
         'maxRatedReadingChecked',
-        'maxRatedReadingScale',
+        'maxRatedReadingScale',       
+
+        /**columns used in sensor table end */
+
         'slaveId',
         'registerId',
         'length',
@@ -32,6 +39,25 @@ class SensorUnit extends Model
         'conversionType',
         'ipAddress',
         'subnetMask',  
+        
+
+
+        /**columns used in sensor table begin */
+
+
+        //EXCEPT ALERT MESSAGE IN SENSOR BEGIN
+
+        'criticalMinValue',
+        'criticalMaxValue',        
+
+        'warningMinValue',
+        'warningMaxValue',        
+
+        'outofrangeMinValue',
+        'outofrangeMaxValue',
+        
+
+        //EXCEPT ALERT MESSAGE IN SENSOR END 
 
         'isStel',
         'stelDuration',
@@ -68,6 +94,10 @@ class SensorUnit extends Model
         
         'relayOutput',
         
+        /**columns used in sensor table end */
+
+
+
         
     ];
 }

@@ -71,6 +71,7 @@ class SensorCategoryController extends Controller
             $sensorCategory->companyCode = $this->companyCode;
             $sensorCategory->sensorName = $request->sensorName;
             $sensorCategory->sensorDescriptions = $request->sensorDescriptions; 
+            $sensorCategory->measureUnitList = $request->measureUnitList;
             
             
             $sensorCategory->save();

@@ -115,9 +115,13 @@ class CreateSensorsTable extends Migration
             $table->text('relayOutput')->nullable();
             $table->text('sensorFault')->nullable();
 
-            $table->text('sensorStatus')->nullable();
-            $table->text('notificationStatus')->nullable();
+            $table->boolean('sensorStatus')->default('1');    
+            $table->boolean('notificationStatus')->default('1');    //changed to default from text            
             
+            $table->boolean('hooterRelayStatus')->default('0'); 
+
+            $table->text('audioDecibelLevel')->nullable();
+
             $table->timestamps();
         });
     }

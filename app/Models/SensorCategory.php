@@ -13,6 +13,7 @@ class SensorCategory extends Model
     protected $fillable = [
         'companyCode',
         'sensorName',
-        'sensorDescriptions'        
+        'sensorDescriptions',
+        'measureUnitList'        
     ];
 }

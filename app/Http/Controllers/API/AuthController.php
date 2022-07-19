@@ -1,11 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\UserLog;
+use App\Models\userLog;
 use App\Models\Customer;
 use RateLimiter;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +19,8 @@ use App\Exceptions\CustomException;
 use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {   
@@ -31,6 +33,7 @@ class AuthController extends Controller
     protected $userId = "";   
     protected $userRole = "";   
 
+    
     
     function __construct(Request $request){
         $date = new DateTime('Asia/Kolkata');      
@@ -200,19 +203,33 @@ class AuthController extends Controller
                 $userLog->userEmail =$user->email;
                 $userLog->companyCode =$user->companyCode;
                 $userLog->action = "LoggedIn";
-                $userLog->save();                
+                $userLog->save();
+                
                 
                 $logoPath = "";
-
                 if($user->user_role == "superAdmin"){
                     $users = User::where('companyCode', $user->companyCode)->first();  
                     $companyName = $users->name;
                     $logoPath = $users->companyLogo;
+                    $alertLogInterval = "";
+                    $deviceLogInterval = "";
+                    $sensorLogInterval = "";
+                    $periodicBackupInterval = "";
+                    $dataRetentionPeriodInterval = "";
+                    
+                    
                 }else{
                     $customer = Customer::where('customerId', $user->companyCode)->first();  
                     $companyName = $customer->customerName;
                     $logoPath = $customer->customerLogo;
-                }               
+                    $alertLogInterval = $customer->alertLogInterval;
+                    $deviceLogInterval = $customer->deviceLogInterval;
+                    $sensorLogInterval = $customer->sensorLogInterval; 
+                    $periodicBackupInterval = $customer->periodicBackupInterval;
+                    $dataRetentionPeriodInterval = $customer->dataRetentionPeriodInterval;
+                    
+                }
+                
                 
                 if($sec_level_auth == 0){
                     $user_feature = "false";
@@ -220,7 +237,8 @@ class AuthController extends Controller
                    
                     $user->login_fail_attempt = 0;
                     $user->last_login_ativity = $this->current_time;
-                    $user->update();    
+                    $user->update(); 
+   
                     
                     $response = [
                         'userDetails'=>[
@@ -232,14 +250,23 @@ class AuthController extends Controller
                             'companyCode'=>$user->companyCode,
                             'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
-                            'forcePasswordReset'=>$user->changePassword,                           
+                            'forcePasswordReset'=>$user->changePassword
+                        ],
+                        'intervalDetails'=>[
+                            'alertLogInterval'=>$alertLogInterval,
+                            'deviceLogInterval'=>$deviceLogInterval,
+                            'sensorLogInterval'=>$sensorLogInterval,
+                            'periodicBackupInterval'=>$periodicBackupInterval,
+                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval
+                            
                         ],
                         'locationDetails'=>[
-                            'location_id'=>$user->location_id,
-                            'branch_id'=>$user->branch_id,
-                            'facility_id'=>$user->facility_id,
-                            'building_id'=>$user->building_id
+                                'location_id'=>$user->location_id,
+                                'branch_id'=>$user->branch_id,
+                                'facility_id'=>$user->facility_id,
+                                'building_id'=>$user->building_id
                         ],
+                        
                         'user_token'=>$token,
                         'lastLoginActivity'=>$this->current_time, 
                     ];
@@ -263,13 +290,20 @@ class AuthController extends Controller
                             'companyCode'=>$user->companyCode,
                             'companyName'=>$companyName,
                             'companyLogo'=>$logoPath,
-                            'forcePasswordReset'=>$user->changePassword                             
+                            'forcePasswordReset'=>$user->changePassword
+                        ],
+                        'intervalDetails'=>[
+                            'alertLogInterval'=>$alertLogInterval,
+                            'deviceLogInterval'=>$deviceLogInterval,
+                            'sensorLogInterval'=>$sensorLogInterval,
+                            'periodicBackupInterval'=>$periodicBackupInterval,
+                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval
                         ],
                         'locationDetails'=>[
-                            'location_id'=>$user->location_id,
-                            'branch_id'=>$user->branch_id,
-                            'facility_id'=>$user->facility_id,
-                            'building_id'=>$user->building_id
+                                'location_id'=>$user->location_id,
+                                'branch_id'=>$user->branch_id,
+                                'facility_id'=>$user->facility_id,
+                                'building_id'=>$user->building_id
                         ],
                         'user_token'=>$token,
                         'lastLoginActivity'=>$this->current_time, 
@@ -426,7 +460,8 @@ class AuthController extends Controller
         }
         return response($response, $status);                   
     }    
-
+    
+    
     public function requestToken(Request $request){
         
         $otp = $request->otp;
@@ -497,14 +532,10 @@ class AuthController extends Controller
                 ];           
                 $status = 201;                
             }
-            
-            
         }
         
-        return response($response, $status);       
-
-        
-    }      
+        return response($response, $status);
+    }    
 
     public function blockedUserPasswordAutogenerate(Request $request){
         
@@ -629,7 +660,7 @@ class AuthController extends Controller
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         $resp = curl_exec($curl);
-        curl_close($curl);            
+        curl_close($curl);           
     }        
 
     /**
@@ -637,7 +668,7 @@ class AuthController extends Controller
      * logout function  and destroying authid
      */
 
-    public function logout(){
+    public function logout(Request $request){
         
         $userEmail = Auth::user()->email;
         $userId = Auth::user()->name;
@@ -649,25 +680,26 @@ class AuthController extends Controller
         $userLog->action = "LoggedOut";
         $userLog->save();
         
+        auth()->user()->tokens()->delete();
         
-        auth()->user()->tokens()->delete();  
         $response = [            
             "message"=>"Logged out successfully"
         ];
         $status = 200;
         return response($response,$status);
-    }     
-
+    } 
+    
     public function UserLogDetails(Request $request){
         $startDate = $request->fromDate;
         $endDate = $request->toDate;
         $userId = $request->userId;
         
+       
         $query = DB::table('user_logs')
                     ->select(DB::raw('*, DATE_FORMAT(created_at,"%d-%m-%Y") as createdDate, TIME(created_at) as createdTime'))
                     ->where('companyCode','=',$this->companyCode)
                     ->where('userId','=',$userId);
-
+                    
         if($startDate === $endDate){
             $query->whereDate('created_at','=',$startDate); 
         }
@@ -678,11 +710,12 @@ class AuthController extends Controller
         $response = [
             "data"=>$query->get()
         ];
-
+        
         $status = 200;
         return response($response,$status);
-    }   
-
+    }
+    
+    
     public function userListDetails(Request $request)
     {
         $query = User::select('name');
@@ -739,8 +772,6 @@ class AuthController extends Controller
                     ->where('user_role','<>','systemSpecialist')
                     ->where('user_role','<>','superAdmin');            
             }
-
-            //SELECT * FROM `sampled_sensor_data_details` where DATE(sample_date_time)='2022-05-10' and HOUR(TIME(sample_date_time))='17' AND parameterName='NH3'
         }
         
         if($location_id != "" && $branch_id != "" && $facility_id != "")
@@ -768,15 +799,13 @@ class AuthController extends Controller
         
         $getData = new DataUtilityController($request,$query);
         $response =   $query->get();
-        $status = 200;       
-
+        $status = 200;
         
         return response($response,$status);
     }
-
-
+    
     public function sendMessage(Request $request){
-        $email = $request->email;
+        $email = "abhishek@rdltech.in";
         $data = [
             'userid'=>$email,
             'subject' => 'Application employee Credentials',
@@ -788,5 +817,4 @@ class AuthController extends Controller
             $messages->subject('Application login credentials');        
         });
     } 
-
 }

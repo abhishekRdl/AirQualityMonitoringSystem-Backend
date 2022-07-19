@@ -17,8 +17,8 @@ class CreateSensorCategoriesTable extends Migration
             $table->id();
             $table->text('companyCode')->nullable();            
             $table->text('sensorName')->nullable();            
-            $table->string('sensorDescriptions')->nullable();         
-
+            $table->string('sensorDescriptions')->nullable();     
+            $table->text('measureUnitList')->nullable();    
             $table->timestamps();
         });
     }

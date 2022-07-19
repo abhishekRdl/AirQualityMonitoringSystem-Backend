@@ -22,6 +22,16 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $companyCode = "";   
+    protected $table = "";
+
+    function __construct(Request $request) {
+        $getData = new UtilityController($request);
+        $this->companyCode = $getData->getCompanyCode();        
+    }
+
+
     public function index()
     {
         //
@@ -126,9 +136,12 @@ class CustomerController extends Controller
 
             $customer->customerLogo = $imagePath;
             $customer->customerTheme = $request->customerTheme;   
-            $customer->alertLogInterval = $request->alertLogInterval;  
-            $customer->deviceLogInterval = $request->deviceLogInterval;  
-            $customer->sensorLogInterval = $request->sensorLogInterval;  
+            $customer->alertLogInterval = 5;  
+            $customer->deviceLogInterval = 5;  
+            $customer->sensorLogInterval = 5;
+            $customer->periodicBackupInterval = 2;
+            $customer->dataRetentionPeriodInterval = 2;
+
 
             $customer->save();
 
@@ -219,9 +232,9 @@ class CustomerController extends Controller
             }
            
             $customer->customerTheme = $request->customerTheme;
-            $customer->alertLogInterval = $request->alertLogInterval;  
-            $customer->deviceLogInterval = $request->deviceLogInterval;  
-            $customer->sensorLogInterval = $request->sensorLogInterval;  
+            // $customer->alertLogInterval = $request->alertLogInterval;  
+            // $customer->deviceLogInterval = $request->deviceLogInterval;  
+            // $customer->sensorLogInterval = $request->sensorLogInterval;  
             
             
             
@@ -297,6 +310,44 @@ class CustomerController extends Controller
         return response($response,$status);
     }
 
+    public function updateCustomerSettings(Request $request){
+        try{
+            $customer = DB::table('customers')
+                    ->where('customerId', '=', $this->companyCode)->first();
+
+            if(!$customer){
+                throw new Exception("Customer not found");
+            }
+
+            if($customer){
+                $id = $customer->id;
+                $customers = Customer::find($id);   
+                $customers->alertLogInterval =  $request->alertLogInterval;  
+                $customers->deviceLogInterval = $request->deviceLogInterval;  
+                $customers->sensorLogInterval = $request->sensorLogInterval;
+                $customers->periodicBackupInterval = $request->periodicBackupInterval;
+                $customers->dataRetentionPeriodInterval = $request->dataRetentionPeriodInterval;
+                $customers->save();
+
+                $response = [
+                    "message"=>"Updated Customer settings Successfully"
+                ];
+                $status = 200;
+            }
+
+        }catch(Exception $e){
+            $response = [
+                "error"=>true,
+                "message"=>$e->getMessage()              
+            ];
+            $status = 401;            
+        }
+
+        return response($response,$status); 
+        
+
+    }
+
     public function customerCustomData(Request $request){
 
         //includes search, sort, and pagination which is page data
@@ -328,10 +379,9 @@ class CustomerController extends Controller
             Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));
         }
       
-    }
-
-    
-
-
-    
+    }    
 }
+
+
+
+

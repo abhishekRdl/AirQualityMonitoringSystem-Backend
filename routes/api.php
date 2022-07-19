@@ -31,9 +31,6 @@ use App\Http\Controllers\AlertCronController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AlertController;
 
-
-
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -44,11 +41,6 @@ use App\Http\Controllers\AlertController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-#http://varmatrix.com/Aqms/blog/public/Customers/A-TEST/Buildings/devices/ConfigSettingFile/dataPush/AQISENSOR_DataPush.json
-#http://127.0.0.1:8000/blog/app/Http/Controllers/CronJobController.php
-#http://varmatrix.com/Aqms/blog/public/app/Http/Controllers/CronJobController.php
-
 
 Route::group(['middleware' => ['web']], function () {    
     
@@ -222,6 +214,8 @@ Route::post('lastUpdatedData', [SampledSensorDataDetailsController::class, 'live
 
 Route::post('/getAlerts', [AlertController::class, 'getAlertData']);
 
+Route::post('/updateCustomerSettings', [CustomerController::class, 'updateCustomerSettings']);
+
 Route::get('AqiChart/add', [AqiChartConfigValuesController::class, 'store']);
 Route::get('AqiChart', [AqiChartConfigValuesController::class, 'index']);
 Route::get('aqmi', [AqmiJsonDataController::class, 'index']); 
@@ -230,6 +224,11 @@ Route::get('aqmi', [AqmiJsonDataController::class, 'index']);
 //NOT USED APIS
 Route::get('sensorTag', [SensorController::class, 'getSensorTagData']); 
 Route::post('/uploadFile', [CustomerController::class, 'uploadImageFile']); 
+
+Route::get('export', [RoleController::class, 'export']);
+
+
+
 
 
 
@@ -254,11 +253,29 @@ Route::get('alarmReport', [ReportController::class, 'alarmReport']);
 //     "password":"123456"
 // }
 
-//git remote add upstream  git@github.com:teamlead-rdl/AirQualityMonitoringSystem.git
-//git remote
-//git pull
-//git pull upstream develop
-//git branch
+
+
+/** Below commnets are of Git commands  */
+#git remote add upstream  git@github.com:teamlead-rdl/AirQualityMonitoringSystem.git
+#git remote
+#git pull
+#git pull upstream develop
+#git branch
+
+/** Accessing file in laravel */
+#http://varmatrix.com/Aqms/blog/public/Customers/A-TEST/Buildings/devices/ConfigSettingFile/dataPush/AQISENSOR_DataPush.json
+
+/** Below command creating model, controller and model */
+#php artisan make:model Facilities -c -m -r
+
+/** Below command is to create excel file download in laravel based in model that is sql table */
+#composer require maatwebsite/excel --ignore-platform-reqs installing excel
+#php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider" --tag=config
+#php artisan make:export RoleExport --model=Role creating excel file
+
+
+
+
 
 
 

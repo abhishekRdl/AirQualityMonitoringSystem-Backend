@@ -35,6 +35,8 @@ class Sensor extends Model
         
         'sensorOutput',
         'sensorType',
+
+
         'sensorTag',
         
         'registerId',
@@ -46,6 +48,8 @@ class Sensor extends Model
         'ipAddress',
         'length',
 
+        /**columns used in sensor unit table begin */
+
         'maxRatedReading',
         'maxRatedReadingChecked',
         'maxRatedReadingScale',
@@ -53,6 +57,8 @@ class Sensor extends Model
         'minRatedReadingChecked',
         'minRatedReadingScale',
         
+         /**columns used in sensor unit table end */
+
         'pollingIntervalType',
         
         'criticalMinValue',
@@ -79,6 +85,7 @@ class Sensor extends Model
         'digitalLowAlert',
         'digitalHighAlert',
 
+        /** used in sensor unit table begin */
 
         'isStel',
         'stelDuration',
@@ -92,8 +99,8 @@ class Sensor extends Model
         'twaAlert',
 
         'alarm',
-        'unLatchDuration',
-
+        'unLatchDuration',       
+        
         'isAQI',
         'parmGoodMinScale',
         'parmGoodMaxScale',
@@ -114,10 +121,18 @@ class Sensor extends Model
         'parmSevereMaxScale',  
 
         'relayOutput',
+
+        /** used in sensor unit  end */
+
+
         'sensorFault',       
 
         'sensorStatus',
-        'notificationStatus'    
+        'notificationStatus',
+
+        'hooterRelayStatus',
+
+        'audioDecibelLevel'
 
         
 

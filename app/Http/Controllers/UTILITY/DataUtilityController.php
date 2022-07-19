@@ -4,53 +4,65 @@ namespace App\Http\Controllers\UTILITY;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\AlertCron;
 
 class DataUtilityController extends Controller
 {
-
-    /* code for paginating data */
-    
-    protected $total = 0;
+    protected $total = "";
     protected $page = "";
-    protected $perPage = 10;
+    protected $perPage = "";
     protected $result = "";  
-    protected $sort = "";  
+    protected $sort = "";   
     protected $column = ""; 
-    protected $data = "";
+    protected $sensorCount = 0;
+    protected $alertCount = 0;
     protected $returnedData = [];
-    protected $searchedKey = "";
-    
+   
     function __construct($request,$query) {
         if($query) {
             
-            $this->perPage = $request->input(key:'perPageData') == "" ? $this->perPage : $request->input(key:'perPageData');
-            $this->sort = $request->input(key:'sort') == "" ? "DESC" : $request->input(key:'sort');
-            $this->column = $request->input(key:'column') == "" ? "id" : $request->input(key:'column');           
+            if($request->lab_id != ""){
+                
+                $devices = $query->get();
+                $length = count($devices);      
+                
+                for($x=0;$x<$length;$x++){
+                    $deviceId = $devices[$x]->id;
+                    $companyCode = $devices[$x]->companyCode;
+                    
+                    $alertQuery = AlertCron::select('*')
+                     ->where('deviceId','=',$deviceId)
+                     ->where('companyCode','=',$companyCode)
+                     ->where('status','=','0')
+                     ->get();
+                     
+                    $alertCount = $alertQuery->count();
+                     
+                    $this->alertCount += $alertCount;
+                }
+            }           
             
-            $query->orderBy($this->column,$this->sort);        
+            $this->perPage = $request->input(key:'perPageData') == "" ? 100 : $request->input(key:'perPageData');
+            $this->sort = $request->input(key:'sort') == "" ? "ASC" : $request->input(key:'sort');
+            $this->column = $request->input(key:'column') == "" ? "id" : $request->input(key:'sort');
+            $query->orderBy($this->column,$this->sort);           
             
             
-            $this->total = $query->count();    //gets the count of data
-            //$this->result = $query->get();
-
-            $this->page = $request->input(key:'page', default:1);  //gets the page number of pagination or by default parameter will be one          
-            $this->result = $query->offset(value:($this->page - 1) * $this->perPage)->limit($this->perPage)->get();    //data will be stored in  results 
-                  
-            
+            $this->page = $request->input(key:'page', default:1);
+            $this->total = $query->count();    
+            $this->result = $query->offset(value:($this->page - 1) * $this->perPage)->limit($this->perPage)->get();             
         }
     }    
 
-    function getData(){                
-        return $returnedData[] = array(          
-                "data"=>$this->result,
-                "sortedType"=>$this->sort,
-                "totalData"=>$this->total,
-                "perPageData"=>$this->perPage,
-                "page"=>$this->page,
-                'lastPage'=>ceil(num:$this->total/ $this->perPage)                
-        );
-        
-       
+    function getData(){
+       return $returnedData[] = array(
+            "data"=>$this->result,
+            "sortedType"=>$this->sort,
+            "totalData"=>$this->total,
+            "perPageData"=>$this->perPage,
+            "page"=>$this->page,
+            "lastPage"=>ceil(num:$this->total/ $this->perPage),
+            "alertCount"=>$this->alertCount                
+       );
     }
 }
