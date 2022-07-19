@@ -7,8 +7,13 @@ class UtilityController extends Controller{
     
     protected $companyCode = "";  
     protected $userId = "";   
-    protected $userRole = "";   
-      
+    protected $userRole = "";      
+    
+    protected $alertColor = [
+        "WARNING"=>"#ffeb3b",
+        "CRITICAL"=>"#d50000",
+        "NORMAL"=>"#1b5e20"
+    ];       
     
     
     function __construct(Request $request) {
@@ -36,6 +41,10 @@ class UtilityController extends Controller{
 
     function getUserRole(){
         return $this->userRole;
+    }
+
+    function getAlertColors(){
+        return $this->alertColor;
     }
 }
 

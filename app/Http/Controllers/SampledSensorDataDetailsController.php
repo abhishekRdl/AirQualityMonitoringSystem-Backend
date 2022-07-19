@@ -16,10 +16,15 @@ class SampledSensorDataDetailsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-     
+    
+    protected $companyCode = ""; 
+    protected $alertColor = "";
+    
     function __construct(Request $request) {
         $getData = new UtilityController($request);
         $this->companyCode = $getData->getCompanyCode(); 
+        $this->alertColor = $getData->getAlertColors();
+        
     }
     
     
@@ -115,7 +120,7 @@ class SampledSensorDataDetailsController extends Controller
         return response($deviceData,200);
     }
     
-    
+    /* function to get last sampled sensor data based on device id */
     public function lastSampledData(Request $request){
         
         //detail of sending data to frontend
@@ -187,7 +192,6 @@ class SampledSensorDataDetailsController extends Controller
                     
                     
         }
-       
         return response($deviceData,200);
     }
 
@@ -214,9 +218,10 @@ class SampledSensorDataDetailsController extends Controller
        
     }
     
-    
+    /* working function getting single sensor data based on sengeation */
     public function getLastSampledDataOfSensorTagIdBarLine(Request $request){
         
+        $color = "";
         if($request->sensorTagId == ""){
             $response = [
                   "data"=>"Sensor Tag Id is required"  
@@ -269,7 +274,7 @@ class SampledSensorDataDetailsController extends Controller
           
             $sensorValues = DB::table('sampled_sensor_data_details')
                             ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                            ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sensors.criticalMaxValue,sensors.warningMaxValue,sensors.outofrangeMaxValue,sampled_sensor_data_details.alertType,sampled_sensor_data_details.sevierity,DATE(sampled_sensor_data_details.sample_date_time) as DATE,TIME_FORMAT(sampled_sensor_data_details.sample_date_time, "%H:%i") as TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,FLOOR(UNIX_TIMESTAMP(sampled_sensor_data_details.time_stamp)/("'. $segregationInterval.'" * 60)) AS timekey,MAX(sampled_sensor_data_details.max_val) as par_max,MIN(sampled_sensor_data_details.min_val) as par_min,AVG(sampled_sensor_data_details.avg_val)  as par_avg,sampled_sensor_data_details.last_val as par_last'))
                             ->whereRaw('sampled_sensor_data_details.time_stamp >=(NOW() - INTERVAL '.$rangeInterval.' MINUTE)')
                             ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagId)
                             ->groupBy('timekey')
@@ -278,15 +283,32 @@ class SampledSensorDataDetailsController extends Controller
             $sensorData["sensorTag"] = $sensorTag;
 
             foreach($sensorValues as $sensor){
-                $sensorData["labels"][] = $sensor->DATE_TIME;
-                $sensorData["avgData"][] = $sensor->par_avg;
-                $sensorData["minData"][] = $sensor->par_min;
-                $sensorData["maxData"][] = $sensor->par_max;
-                $sensorData["lastData"][] = $sensor->par_last;
-                	// $sensorData["data"][] = [ 
-      	        //     "y"=>$sensor->par_last,
-      	        //     "x"=>$sensor->DATE_TIME
-              	// ];
+                //setting colors based on values
+                if($sensor->alertType == "Critical"){
+                    $color = $this->alertColor['CRITICAL'];
+                }
+                if($sensor->alertType == "Warning"){
+                    $color = $this->alertColor['WARNING'];
+                }
+                if($sensor->alertType == "NORMAL"){
+                    $color = $this->alertColor['NORMAL'];
+                }
+                
+                //Not to display out of range values
+                
+                if($sensor->sevierity !== "LOW" && $sensor->alertType != "outOfRange"){
+                    
+                    $sensorData["labels"][] = $sensor->DATE." ".$sensor->TIME;
+                    $sensorData["colors"][]= $color;
+                    $sensorData["avgData"][] = $sensor->par_avg;
+                    $sensorData["minData"][] = $sensor->par_min;
+                    $sensorData["maxData"][] = $sensor->par_max;
+                    $sensorData["lastData"][] = $sensor->par_last;
+                    $sensorData["warningLevel"][] = $sensor->warningMaxValue;
+                    $sensorData["criticalLevel"][] = $sensor->criticalMaxValue;
+                    $sensorData["outofrangeLevel"][] = $sensor->outofrangeMaxValue;
+               
+                }
             }               
                             
             $response = $sensorData;
@@ -452,11 +474,12 @@ class SampledSensorDataDetailsController extends Controller
         $deviceData = array();
         $output = array();
         $sensorData = array();
+        $alertColor = "";
         
         for($x=0;$x<$length;$x++){
             $otherDataValues = DB::table('sampled_sensor_data_details')
                          ->join('sensors', 'sensors.id', '=', 'sampled_sensor_data_details.sensor_id')
-                          ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,sampled_sensor_data_details.max_val as par_max,sampled_sensor_data_details.min_val as par_min,sampled_sensor_data_details.avg_val as par_avg,sampled_sensor_data_details.last_val as par_last'))
+                          ->select(DB::raw('sensors.deviceId,sensors.deviceName,sensors.sensorTag,sampled_sensor_data_details.alertType,sampled_sensor_data_details.sample_date_time as DATE_TIME,sampled_sensor_data_details.sensor_id,sampled_sensor_data_details.parameterName as parameter,sampled_sensor_data_details.sample_date_time AS timekey,sampled_sensor_data_details.max_val as par_max,sampled_sensor_data_details.min_val as par_min,sampled_sensor_data_details.avg_val as par_avg,sampled_sensor_data_details.last_val as par_last'))
                           ->where('sampled_sensor_data_details.sensor_id','=',$sensorTagsOfDeviceId[$x]->id)
                           ->orderBy('sampled_sensor_data_details.id','desc')
                           ->first();
@@ -467,6 +490,15 @@ class SampledSensorDataDetailsController extends Controller
                     $avgVal = round($otherDataValues->par_avg,2);
                     $lastVal = round($otherDataValues->par_last,2);
                     $sensorTagName = $otherDataValues->sensorTag; 
+                    if($otherDataValues->alertType === "Critical"){
+                        $alertColor = $this->alertColor['CRITICAL'];
+                    }
+                    if($otherDataValues->alertType === "Warning"){
+                        $alertColor = $this->alertColor['WARNING'];
+                    }
+                    if($otherDataValues->alertType === "NORMAL"){
+                        $alertColor = $this->alertColor['NORMAL'];
+                    }
                     
                     if($sensorTagName != ""){
                         if($sensorTagsOfDeviceId[$x]->sensorOutput == "Analog"){
@@ -486,6 +518,7 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["max"] = $maxVal;
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
+                            $sensorData["alertColor"] = $alertColor;
                             $deviceData['Analog']['data'][] = $sensorData;
                             $sensorCount++;
                         }
@@ -508,6 +541,7 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["max"] = $maxVal;
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
+                            $sensorData["alertColor"] = $alertColor;
                             $deviceData['Digital']['data'][] = $sensorData;
                             $sensorCount++;
                         }
@@ -529,6 +563,7 @@ class SampledSensorDataDetailsController extends Controller
                             $sensorData["max"] = $maxVal;
                             $sensorData["avg"] = $avgVal;
                             $sensorData["last"] = $avgVal;
+                            $sensorData["alertColor"] = $alertColor;
                             $deviceData['Modbus']['data'][] = $sensorData;
                             $sensorCount++;
                         }

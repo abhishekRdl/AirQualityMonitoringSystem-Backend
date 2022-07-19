@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\UTILITY\ReportsDataUtilityController;
 
 use App\Http\Controllers\UtilityController;
-
+use App\Exports\ReportExport;
+use App\Exports\BumpTestReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -68,7 +70,7 @@ class ReportController extends Controller
                 
         })
         // ->select(DB::raw('*, DATE_FORMAT(btr.created_at,"%d-%m-%Y") as createdDate, TIME(btr.created_at) as createdTime'))
-        ->select('c.customerId', 'l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.id','d.deviceName','btr.sensorTagName','btr.lastDueDate','btr.created_at')
+        ->select('c.customerId', 'l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.id','d.deviceName','btr.sensorTagName','btr.lastDueDate','btr.created_at','btr.result')
         ->WHERE('customerId','=','A-TEST')
         ->WHERE('device_id','=',$request->device_id);
         //->WHERE('sensorTagName','=',$request->sensorTagName)
@@ -86,6 +88,7 @@ class ReportController extends Controller
             
         $response = [
              "data"=>$getData->getData()
+             
         ];
         
         $status = 200;
@@ -150,12 +153,12 @@ class ReportController extends Controller
                 if($startDate === $endDate){
                     $query->whereDate('alarm.a_date','=',$startDate); 
                 }
-                else{
+                else {
                     $query->whereBetween('alarm.a_date', [$startDate, $endDate]);    
                 }
 
                 $getData = new ReportsDataUtilityController($request,$query);
-            
+
                 $response = [
                      "data"=>$getData->getData()["data"]
                 ];
@@ -165,10 +168,15 @@ class ReportController extends Controller
        return response($response,$status);
     }
 
-    public function aqiReport(Request $request){
 
-        $startDate = date("Y-m-d",strtotime($request->fromDate));
-        $endDate = date("Y-m-d", strtotime($request->toDate));
+    public function exportAlarm(Request $request) 
+    {    
+        // $startDate = date("Y-m-d",strtotime($request->fromDate));
+        // $endDate = date("Y-m-d", strtotime($request->toDate));
+
+        $startDate = date("Y-m-d",strtotime($request->input(key:'fromDate')));
+        $endDate = date("Y-m-d", strtotime($request->input(key:'toDate')));
+
         $query = DB::table('customers as c')
         ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
         ->Join('branches as b', function($join){
@@ -210,29 +218,32 @@ class ReportController extends Controller
                 ->on('fl.id','=','d.floor_id')
                 ->on('lb.id','=','d.lab_id');
         })
-        ->select('alarm.id','c.customerId','l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.deviceName','alarm.deviceId','alarm.sensorTag','alarm.Reason','alarm.alertType','alarm.sensorId','alarm.a_date','alarm.a_time')
+        ->Join('alert_crons as alarm', function($join){
+            $join->on('c.customerId', '=', 'alarm.companyCode')
+                  ->on('d.id', '=', 'alarm.deviceId');
+        })
+           ->select('alarm.a_date','alarm.a_time','d.deviceName','lb.labDepName','alarm.sensorTag','alarm.alertType','alarm.Reason')
                 ->WHERE('customerId','=','A-TEST')
-                ->WHERE('deviceId','=',$request->deviceId);
+                ->WHERE('deviceId','=',$request->input(key:'deviceId'));
                 // ->orderBy('id', 'DESC');
                 if($startDate === $endDate){
-                    $query->whereDate('alarm.a_date','=',$startDate); 
+                    $query->whereDate('alarm.a_date','=',$startDate);
                 }
-                else{
-                    $query->whereBetween('alarm.a_date', [$startDate, $endDate]);    
+                else {
+                    $query->whereBetween('alarm.a_date', [$startDate, $endDate]);  
                 }
 
-                $getData = new ReportsDataUtilityController($request,$query);
-            
-                $response = [
-                     "data"=>$getData->getData()
-                ];
-                $status = 200;
-       return response($response,$status);
+                // $getData = new ReportsDataUtilityController($request,$query);
+
+        return Excel::download(new ReportExport($query), 'ReportAlarm.xlsx');
     }
 
-    public function AqiLogs(Request $request){
-        $startDate = date("Y-m-d",strtotime($request->fromDate));
-        $endDate = date("Y-m-d", strtotime($request->toDate));
+
+    public function exportBumpTest(Request $request) 
+    {  
+        $startDate = date("Y-m-d",strtotime($request->input(key:'fromDate')));
+        $endDate = date("Y-m-d", strtotime($request->input(key:'toDate')));
+
         $query = DB::table('customers as c')
         ->join('locations as l', 'c.customerId', '=', 'l.companyCode')
         ->Join('branches as b', function($join){
@@ -272,21 +283,29 @@ class ReportController extends Controller
                 ->on('f.id','=','d.facility_id')
                 ->on('bl.id','=','d.building_id')
                 ->on('fl.id','=','d.floor_id')
-                ->on('lb.id','=','d.lab_id');     
+                ->on('lb.id','=','d.lab_id');
         })
-        ->Join('sensors as s', function($join){
-                    $join->on('c.customerId', '=', 'd.companyCode')
-                        ->on('l.id', '=', 's.location_id')
-                        ->on('b.id', '=', 's.branch_id')
-                        ->on('f.id','=','s.facility_id')
-                        ->on('bl.id','=','s.building_id')
-                        ->on('fl.id','=','s.floor_id')
-                        ->on('lb.id','=','s.lab_id')
-                        ->on('d.id','=','s.deviceid');
-                })
-        ->select('alarm.id','c.customerId','l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.deviceName','alarm.deviceId','alarm.sensorTag','alarm.Reason','alarm.alertType','alarm.sensorId','alarm.a_date','alarm.a_time')
-                ->WHERE('customerId','=','A-TEST')
-                ->WHERE('deviceId','=',$request->deviceId);
+        ->Join('bump_test_results as btr', function($join){
+            $join->on('c.customerId', '=', 'btr.companyCode')
+                ->on('d.id', '=', 'btr.device_id');             
+                
+        })
+        // ->select(DB::raw('*, DATE_FORMAT(btr.created_at,"%d-%m-%Y") as createdDate, TIME(btr.created_at) as createdTime'))
+        ->select('btr.created_at', 'l.stateName', 'b.branchName','f.facilityName','bl.buildingName','fl.floorName','lb.labDepName','d.deviceName','btr.sensorTagName','btr.result','btr.lastDueDate')
+        ->WHERE('customerId','=','A-TEST')
+        ->WHERE('device_id','=',$request->input(key:'deviceId'));
+        //->WHERE('sensorTagName','=',$request->sensorTagName)
+
+        if($startDate === $endDate){
+            $query->whereDate('btr.created_at','=',$startDate); 
+        }
+        else{
+            $query->whereBetween('btr.created_at', [$startDate, $endDate]);    
+        }
+        return Excel::download(new BumpTestReportExport($query), 'ReportBumpTest.xlsx');
     }
 }
+
+// laravel 2022-06-16 12:21:32 
+// react  2022-06-17T03:30:00.000Z
 

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
@@ -29,6 +28,7 @@ use App\Http\Controllers\CalibrationTestResultController;
 use App\Http\Controllers\SampledSensorDataDetailsController;
 use App\Http\Controllers\AlertCronController;
 use App\Http\Controllers\ReportController;
+use App\Http\Middleware\CheckReportHeaders;
 
 
 
@@ -47,6 +47,8 @@ use App\Http\Controllers\ReportController;
 #http://varmatrix.com/Aqms/blog/public/Customers/A-TEST/Buildings/devices/ConfigSettingFile/dataPush/AQISENSOR_DataPush.json
 #http://127.0.0.1:8000/blog/app/Http/Controllers/CronJobController.php
 #http://varmatrix.com/Aqms/blog/public/app/Http/Controllers/CronJobController.php
+
+
 Route::group(['middleware' => ['web']], function () {    
     
 });
@@ -230,10 +232,8 @@ Route::post('bumpTestResult/add',[BumpTestResultController::class,'store']);
 
 Route::get('reportBumpTest', [ReportController::class, 'reportBumpTest']); 
 Route::get('alarmReport', [ReportController::class, 'alarmReport']); 
-
-
-/** Prajwal Reports api end */
-
+Route::get('exportCsv', [ReportController::class, 'exportAlarm'])->middleware(CheckReportHeaders::class);
+Route::get('exportBumpTestCsv', [ReportController::class, 'exportBumpTest'])->middleware(CheckReportHeaders::class);
 
 //local
 // {
