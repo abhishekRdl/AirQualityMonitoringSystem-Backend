@@ -354,14 +354,14 @@ class BumpTestResultController extends Controller
 
 //Request input
 // {
+//     "device_id":3,
 //     "sensorTagName":"HydroSen-02",
 //     "lastDueDate":"22-08-2022",
 //     "typeCheck":"span",
 //     "percentageConcentrationGas":"23",
 //     "durationPeriod":"5",
 //     "displayedValue":"35",
-//     "percentageDeviation":"65",
+//     "percentageDeviation":"2",
 //     "calibrationDate":"22-08-2022",
-//     "nextDueDate":"26-08-2022",
-//     "result":"fail"
+//     "nextDueDate":"26-08-2022"  
 // }

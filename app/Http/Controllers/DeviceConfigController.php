@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 use Exception;
 use Illuminate\Database\QueryException;
 
-class DeviceController extends Controller
+class DeviceConfigController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -51,239 +51,173 @@ class DeviceController extends Controller
         return response($response,$status);   
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function configDevice(Request $request){
         
-        try{
-            $deviceDataFound = DB::table('devices')
-                ->where('companyCode', '=', $this->companyCode)  
-                ->where('location_id', '=', $request->location_id)             
-                ->where('branch_id', '=', $request->branch_id)             
-                ->where('facility_id', '=', $request->facility_id)             
-                ->where('building_id', '=', $request->building_id) 
-                ->where('category_id', '=', $request->category_id)     
-                ->where('deviceName', '=', $request->deviceName)                                
-                ->first();                      
-                
-            if($deviceDataFound){
-                throw new Exception("Duplicate entry for device name ");
-            }
-
-            $device = new Device;
-            
-            $categories = Categories::where('id',$request->category_id)->first();
-            $deviceCategory = $categories->categoryName;
-                
-            $device->companyCode = $this->companyCode;
-            $device->location_id = $request->location_id;   
-            $device->branch_id = $request->branch_id;            
-            $device->facility_id = $request->facility_id;
-            $device->building_id = $request->building_id;
-            
-            $device->floor_id=$request->floor_id;
-            $device->floorCords=$request->floorCords;
-            $device->lab_id=$request->lab_id;
-            
-            $device->deviceName = $request->deviceName;
-            $device->deviceCategory = $deviceCategory;    
-            $device->category_id = $request->category_id;   
-            $device->firmwareVersion = $request->firmwareVersion;   
-            $device->macAddress = $request->macAddress;  
-            
-
-            $image = $request->deviceImage;  // your base64 encoded
-
-            if($image){
-                $image = str_replace('data:image/png;base64,', '', $request->deviceImage);
-                $image = str_replace(' ', '+', $image);
-                $imageName =  $request->deviceName.".png";
-                //$picture   = date('His').'-'.$filename;                
-                $path = "Customers/".$this->companyCode."/Buildings/devices";     
-                $imagePath = $path."/".$imageName;        
-                Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
-                $device->deviceImage = $imagePath;              
-            }        
-            
-            // $device->deviceIcon =  $request->deviceIcon;
-            $accessPath = "http://varmatrix.com/Aqms/blog/public/";
-            
-            //datapush file creation
-            $dataPushFileName =  $request->deviceName."_DataPush.json";
-            $dataPushdata = json_encode(['Element 1','Element 2','Element 3','Element 4','Element 5']);
-            $dataPushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile";     
-            Storage::disk('public_uploads')->put($dataPushUrlpath."/".$dataPushFileName, $dataPushdata); 
-
-            
-            //firmwarepush file creation
-            // $firmwarePushFileName =  $request->deviceName."_firmwarePush.json";
-            // $firmwarePushdata = json_encode(['Element 1','Element 2','Element 3','Element 4','Element 5']);
-            $firmwarePushUrlpath = "Customers/".$this->companyCode."/Buildings/devices/ConfigSettingFile"; 
-
-            //Storage::disk('public_uploads')->put($accessPath.$firmwarePushUrlpath."/".$firmwarePushFileName, $firmwarePushdata); 
-            
-            $device->deviceTag =  $request->deviceTag;  
-            $device->nonPollingPriority =  $request->nonPollingPriority;  
-            $device->pollingPriority =  $request->pollingPriority;  
-            
-            $device->dataPushUrl = $accessPath.$dataPushUrlpath."/".$dataPushFileName;
-            $device->firmwarePushUrl = $accessPath.$firmwarePushUrlpath;
-            
-            $device->save();
-            $response = [
-                "message" => "Device name added successfully"
-            ];
-            $status = 201;   
-        }catch(Exception $e){
-            $response = [
-                "message"=>$e->getMessage()
-            ];            
-            $status = 406;
-        }catch(QueryException $e){
-            $response = [
-                "error" => $e->errorInfo
-            ];
-            $status = 406; 
-       }
-       return response($response,$status);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Device $device)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Device $device)
-    {
+        $ID = $request->ID;
+        $CONFIG = $request->CONFIG;
+        $channel = $request->CH;
+        $status = $request->STATUS;
         
+        // $macAddress = $request->MACADDRESS;
+        // $deviceId = $request->DEVICEID;
+
+
+        /*****************************SSID**********************************/
+
+        if($ID == 'RDL456' && $CONFIG == 'SSID' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=10=linksys";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'SSID' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /******************************PASSWORD******************************/
+        elseif($ID == 'RDL456' && $CONFIG == 'PASS' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=30=2020@RDL";
+        }
+        else if($CONFIG == 'PASS' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*************************ID****************************************/
+        elseif($ID == 'RDL456' && $CONFIG == 'ID' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=50=RDL456";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'ID' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /**************************UPLODING URL***************************************/
+
+        elseif($ID == 'RDL456' && $CONFIG == 'URL' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=80=http://industrypi.com/rdl_rnd_test/uploaddata.php";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'URL' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*************************OTA****************************************/
+
+        elseif($ID == 'RDL456' && $CONFIG == 'OTA' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=200=http://industrypi.com/rdl_rnd_test/uploaddata.php";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'OTA' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /************************  PIROITY  ***************************************/
+
+        elseif($ID == 'RDL456' && $CONFIG == 'PRTY' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=300=10";
+        }
+        else if($CONFIG == 'PRTY' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*****************************NO  PIROITY*******************************************/
+        elseif($ID == 'RDL456' && $CONFIG == 'NONPRTY' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=310=60";
+        }
+        else if($CONFIG == 'NONPRTY' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*****************************ADC*****************************************/  
+        elseif($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=500=1,1,1,1,1";  //ch1,ch2,ch3,ch4,PRY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*
+        elseif($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '2' && $status == '0'){
+            echo "RDL456-AT-WRITE=520=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '2' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        elseif($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '3' && $status == '0'){
+            echo "RDL456-AT-WRITE=540=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '3' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        elseif($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '4' && $status == '0'){
+            echo "RDL456-AT-WRITE=560=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'ADC' && $channel == '4' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }*/
+
+        /*****************************DIGTAL*****************************************/  
+        elseif($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=600=1,1,1,1,2";   //ch1,ch2,ch3,ch4,PRY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+        /*
+        elseif($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '2' && $status == '0'){
+            echo "RDL456-AT-WRITE=620=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '2' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        elseif($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '3' && $status == '0'){
+            echo "RDL456-AT-WRITE=640=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '3' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        elseif($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '4' && $status == '0'){
+            echo "RDL456-AT-WRITE=660=1,1";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'DIGTAL' && $channel == '4' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }*/
+        /**************************************MODBUS *******************************************/
+        else if($ID == 'RDL456' && $CONFIG == 'METER' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-METER=4";
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'METER' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '1' && $status == '0'){
+            echo "RDL456-AT-WRITE=1010=1,3,25,2,20";   //SLAVE ID ,FC ,ADDRESS,LENG,PRTY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '1' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '2' && $status == '0'){
+            echo "RDL456-AT-WRITE=1060=1,3,45,2,10";   //SLAVE ID ,FC ,ADDRESS,LENG,PRTY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '2' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '3' && $status == '0'){
+            echo "RDL456-AT-WRITE=1110=1,3,10,2,15";   //SLAVE ID ,FC ,ADDRESS,LENG,PRTY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '3' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '4' && $status == '0'){
+            echo "RDL456-AT-WRITE=1160=1,3,55,2,30";   //SLAVE ID ,FC ,ADDRESS,LENG,PRTY
+        }
+        else if($ID == 'RDL456' && $CONFIG == 'MODBUS' && $channel == '4' && $status == '1'){
+            echo "RDL456-OK-WR";
+        }
+
+
+
+        else
+        {
+            echo "kanwal"; 
+        }
     }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Device  $device
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        try{
-
-            $deviceDataNotFound = Device::find($id);
-                
-            if(!$deviceDataNotFound){
-                throw new Exception("Device data not found");
-            }
-
-
-            $deviceDataFound = DB::table('devices')
-                ->where('companyCode', '=', $this->companyCode)  
-                ->where('location_id', '=', $request->location_id)             
-                ->where('branch_id', '=', $request->branch_id)             
-                ->where('facility_id', '=', $request->facility_id)             
-                ->where('building_id', '=', $request->building_id)   
-                ->where('category_id', '=', $request->category_id)     
-                ->where('deviceName', '=', $request->deviceName) 
-                ->where('id','<>',$id)                                             
-                ->first();                                  
-                
-            if($deviceDataFound){
-                throw new Exception("Duplicate entry for device name ");
-            }
-
-            $device = Device::find($id);
-            if($device){
-                
-                $categories = Categories::where('id',$request->category_id)->first();
-                $deviceCategory = $categories->categoryName;
-            
-            
-                $device->companyCode = "r007";
-                $device->location_id = $request->location_id;   
-                $device->branch_id = $request->branch_id;            
-                $device->facility_id = $request->facility_id;
-                $device->building_id = $request->building_id;
-                
-                $device->floor_id=$request->floor_id;
-                $device->floorCords=$request->floorCords;
-                $device->lab_id=$request->lab_id;
-            
-            
-                $device->deviceName = $request->deviceName;
-                $device->category_id = $request->category_id;   
-                $device->deviceCategory = $deviceCategory;    
-                $device->firmwareVersion = $request->firmwareVersion;   
-                $device->macAddress = $request->macAddress;      
-                
-                $image = $request->deviceImage;  // your base64 encoded
-
-                if($image){
-                    $image = str_replace('data:image/png;base64,', '', $request->deviceImage);
-                    $image = str_replace(' ', '+', $image);
-                    $imageName = $request->deviceName.".png";
-                    //$picture   = date('His').'-'.$filename;                
-                    $path = "Customers/".$this->companyCode."/Buildings/devices";     
-                    $imagePath = $path."/".$imageName;        
-                    Storage::disk('public_uploads')->put($path."/".$imageName, base64_decode($image));    
-                    $device->deviceImage = $imagePath;              
-                }               
-                
-                // $device->deviceIcon =  $request->deviceIcon;
-                
-                $device->deviceTag =  $request->deviceTag;     
-                
-                $device->nonPollingPriority =  $request->nonPollingPriority;  
-                $device->pollingPriority =  $request->pollingPriority;  
-                
-                $device->save();
-                $response = [
-                    "message" => "Device name updated successfully"
-                ];
-                $status = 201;   
-            }    
-
-        }catch(Exception $e){
-            $response = [
-                "message"=>$e->getMessage()
-            ];            
-            $status = 406;
-        }catch(QueryException $e){
-            $response = [
-                "error" => $e->errorInfo
-            ];
-            $status = 406; 
-       }
-       return response($response,$status);
-    }
-
+    
     /**
      * Remove the specified resource from storage.
      *

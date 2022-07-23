@@ -155,7 +155,7 @@ class CalibrationTestResultController extends Controller
                 
                 
         $userNotificationEnabledData = DB::table('users')
-               // ->where('companyCode','=',$this->companyCode)
+                ->where('companyCode','=',$this->companyCode)
                 ->where('empNotification','=','1')
                 ->get();
 
