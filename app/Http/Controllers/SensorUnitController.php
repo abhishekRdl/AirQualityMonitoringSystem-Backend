@@ -177,6 +177,8 @@ class SensorUnitController extends Controller
                 $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
 
                 $sensorUnit->relayOutput = $request->relayOutput;
+
+                $sensorUnit->bumpTestRequired = $request->bumpTestRequired;
                 
         
                 $sensorUnit->save();
@@ -325,6 +327,12 @@ class SensorUnitController extends Controller
             $sensorUnit->parmSevereMaxScale = $request->parmSevereMaxScale;
 
             $sensorUnit->relayOutput = $request->relayOutput;
+
+            $sensorUnit->bumpTestRequired = $request->bumpTestRequired;
+
+
+
+
                 
             $sensorUnit->save();
 

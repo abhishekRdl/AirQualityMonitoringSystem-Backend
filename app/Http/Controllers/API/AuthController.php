@@ -216,6 +216,7 @@ class AuthController extends Controller
                     $sensorLogInterval = "";
                     $periodicBackupInterval = "";
                     $dataRetentionPeriodInterval = "";
+                    $expireDateReminder = "";
                     
                     
                 }else{
@@ -227,6 +228,7 @@ class AuthController extends Controller
                     $sensorLogInterval = $customer->sensorLogInterval; 
                     $periodicBackupInterval = $customer->periodicBackupInterval;
                     $dataRetentionPeriodInterval = $customer->dataRetentionPeriodInterval;
+                    $expireDateReminder = $customer->expireDateReminder;
                     
                 }
                 
@@ -257,7 +259,8 @@ class AuthController extends Controller
                             'deviceLogInterval'=>$deviceLogInterval,
                             'sensorLogInterval'=>$sensorLogInterval,
                             'periodicBackupInterval'=>$periodicBackupInterval,
-                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval
+                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval,
+                            'expireDateReminder'=>$expireDateReminder
                             
                         ],
                         'locationDetails'=>[
@@ -297,7 +300,8 @@ class AuthController extends Controller
                             'deviceLogInterval'=>$deviceLogInterval,
                             'sensorLogInterval'=>$sensorLogInterval,
                             'periodicBackupInterval'=>$periodicBackupInterval,
-                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval
+                            'dataRetentionPeriodInterval'=>$dataRetentionPeriodInterval,
+                            'expireDateReminder'=>$expireDateReminder
                         ],
                         'locationDetails'=>[
                                 'location_id'=>$user->location_id,

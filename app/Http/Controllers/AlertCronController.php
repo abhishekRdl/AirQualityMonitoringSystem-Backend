@@ -5,6 +5,7 @@ use App\Http\Controllers\UTILITY\DataUtilityController;
 use App\Models\AlertCron;
 use Illuminate\Http\Request;
 
+
 class AlertCronController extends Controller
 {
     /**
@@ -46,10 +47,10 @@ class AlertCronController extends Controller
      */
     public function show(Request $request)
     {   
-       // $deviceId  = $request->device_id;
+       $deviceId  = $request->device_id;
 
         $query = AlertCron::select('*')
-                 ->where('deviceId','=','3');
+                 ->where('deviceId','=',$deviceId);
                 
         $getData = new DataUtilityController($request,$query);
         $response = $getData->getData();
@@ -92,6 +93,10 @@ class AlertCronController extends Controller
                          'status' => $status,
                          'statusMessage'=>$statusMessage
                     ]);
+
+        //hooter relay status to be enabled once it is acknowledge by the user
+
+
         
         if($query){
             $response = [

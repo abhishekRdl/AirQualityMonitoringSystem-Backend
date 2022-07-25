@@ -6,9 +6,18 @@ use Illuminate\Support\Facades\DB;
 use App\Models\AlertCron;
 use App\Models\Device;
 use App\Models\Sensor;
+use App\Http\Controllers\UtilityController;
 
 class AlertController extends Controller
 {
+
+    protected $companyCode = "";   
+    
+    function __construct(Request $request) {
+        $getData = new UtilityController($request);
+        $this->companyCode = $getData->getCompanyCode();       
+        
+    }
     
     public function getAlertData(Request $request){
         

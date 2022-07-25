@@ -489,10 +489,10 @@ class SampledSensorDataDetailsController extends Controller
                         ->first();
                           
                 if($otherDataValues != ""){
-                    $minVal = round($otherDataValues->par_min,2);
-                    $maxVal = round($otherDataValues->par_max,2);
-                    $avgVal = round($otherDataValues->par_avg,2);
-                    $lastVal = round($otherDataValues->par_last,2);
+                    $minVal = round(floatval($otherDataValues->par_min));
+                    $maxVal = round(floatval($otherDataValues->par_max));
+                    $avgVal = round(floatval($otherDataValues->par_avg));
+                    $lastVal = round(floatval($otherDataValues->par_last));
                     $sensorTagName = $otherDataValues->sensorTag; 
                     if($otherDataValues->alertType === "Critical"){
                         $alertColor = $this->alertColor['CRITICAL'];

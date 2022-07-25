@@ -77,6 +77,8 @@ class CreateSensorUnitsTable extends Migration
             $table->text('parmSevereMaxScale')->nullable();     
             
             $table->text('relayOutput')->nullable();
+
+            $table->string('bumpTestRequired')->nullable();
             
             $table->timestamps();
         });

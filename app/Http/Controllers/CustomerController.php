@@ -141,6 +141,7 @@ class CustomerController extends Controller
             $customer->sensorLogInterval = 5;
             $customer->periodicBackupInterval = 2;
             $customer->dataRetentionPeriodInterval = 2;
+            $customer->expireDateReminder = 2;
 
 
             $customer->save();
@@ -327,6 +328,7 @@ class CustomerController extends Controller
                 $customers->sensorLogInterval = $request->sensorLogInterval;
                 $customers->periodicBackupInterval = $request->periodicBackupInterval;
                 $customers->dataRetentionPeriodInterval = $request->dataRetentionPeriodInterval;
+                $customers->expireDateReminder = $request->expireDateReminder;
                 $customers->save();
 
                 $response = [

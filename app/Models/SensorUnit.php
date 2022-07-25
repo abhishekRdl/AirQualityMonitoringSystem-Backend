@@ -96,6 +96,8 @@ class SensorUnit extends Model
         
         /**columns used in sensor table end */
 
+        'bumpTestRequired'
+
 
 
         

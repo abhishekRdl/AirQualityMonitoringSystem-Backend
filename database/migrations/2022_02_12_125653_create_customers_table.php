@@ -29,6 +29,10 @@ class CreateCustomersTable extends Migration
             $table->string('periodicBackupInterval')->nullable();
             $table->string('dataRetentionPeriodInterval')->nullable();
 
+            $table->string('expireDateReminder')->nullable();
+
+
+
             $table->timestamps();
         });
     }

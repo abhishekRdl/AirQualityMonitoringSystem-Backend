@@ -21,7 +21,8 @@ class Customer extends Model
         'deviceLogInterval',
         'sensorLogInterval',
         'periodicBackupInterval',
-        'dataRetentionPeriodInterval'
+        'dataRetentionPeriodInterval',
+        'expireDateReminder'
 
     ];
 }
