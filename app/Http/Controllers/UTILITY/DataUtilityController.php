@@ -86,8 +86,8 @@ class DataUtilityController extends Controller
                 "perPageData"=>$this->perPage,
                 "page"=>$this->page,
                 "lastPage"=>ceil(num:$this->total/ $this->perPage),
-                "alertCount"=>$this->alertCount
-                
+                "alertCount"=>$this->alertCount,
+                "disconnectedDevices"=>5              
                 
        );
     }
